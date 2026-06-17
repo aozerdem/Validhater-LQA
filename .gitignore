@@ -1,0 +1,46 @@
+# ── Python ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+
+# ── IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+
+# ── OS ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Generated output (timestamped reports) ──────────
+# Root-level outputs
+va_report_*.xlsx
+va_report_*.md
+analysis_*.xlsx
+PE_va_report_*.md
+PU_va_report_*.md
+test1-results-*.md
+test2-results-*.md
+test2-results-*.xlsx
+
+# Report folders
+calibration reports/
+output results/
+
+# TMX analysis outputs
+tmx_findings_*.md
+SG and References/tmx_findings_*.md
+
+# ── Client data — do not commit ─────────────────────
+# Amazon translation memory (confidential)
+SG and References/tmx/
+
+# Raw Galileo export files (Amazon product data)
+test samples/
+
+# Project emails / internal comms
+SG and References/Project Info/

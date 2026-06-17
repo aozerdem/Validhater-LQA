@@ -1,0 +1,946 @@
+[
+  {
+    "row": 2,
+    "source": "Xunulyn Classic Unisex Baseball Cap Adjustable Cute Puppy Flower Cartoon Hand Drawn can be Used Print Kids wear Fashion Design Baby sho",
+    "mt": "Xunulyn Classic Unisex baseballcap Justerbar søt valpeblomst Tegneserie Håndtegnet kan brukes Trykk Barneklær Motedesign Baby sho",
+    "verdict": "No",
+    "pe": "Xunulyn Classic Unisex baseballcaps Justerbar Søt valp Blomst Tegneserie Håndtegnet kan brukes Trykk Barneklær Motedesign Baby sho",
+    "reason": "\"Cute Puppy Flower\" should not be translated as \"søt valpeblomst\". \"Cute Puppy Flower\" should be seen as two different segments. \"Cute Puppy\" go well together and can be translated as \"Søt valp\". \"Flower\" should be translated as \"Blomst\" and treated as its own segment.",
+    "mt_red": [
+      "baseballcap",
+      "søt valpeblomst"
+    ],
+    "pe_red": [
+      "baseballcaps ",
+      "Søt valp Blomst "
+    ]
+  },
+  {
+    "row": 3,
+    "source": "The baseball cap really very cute.Suit for adult.",
+    "mt": "Baseballhetten er veldig søt. Drakt for voksne.",
+    "verdict": "No",
+    "pe": "Baseballcapsen er veldig søt. Passer til voksne.",
+    "reason": "I have changed \"Baseballhetten\" to \"Baseballcapsen\". In Norwegian the most commonly used translation of \"Baseball Cap\" is \"Baseballcap\", \"Baseballcaps\", \"Baseballcapsen\" etc. I have changed \"Drakt for voksne\" to \"Passer til voksne\". Note though: \"Drakt for voksne\" is technically the correct translation of \"Suit for adult\", but this translation does not fit the context. It seems like \"Suit for adult\" should actually be \"suitable for adults\", and is refering to the baseball cap and whether or not this would suit an adult person.",
+    "mt_red": [
+      "Baseballhetten",
+      "Drakt for voksne"
+    ],
+    "pe_red": []
+  },
+  {
+    "row": 4,
+    "source": "MATERIAL - Made With 100% Cotton",
+    "mt": "MATERIALE - Laget med 100% bomull",
+    "verdict": "No",
+    "pe": "MATERIALE - Laget med 100 % bomull",
+    "reason": "There should be a space between the number and % sign. Preferably a non-breakable space.",
+    "mt_red": [
+      "100%"
+    ],
+    "pe_red": [
+      "100 % "
+    ]
+  },
+  {
+    "row": 5,
+    "source": "Quality is great and the material feels very sturdy.",
+    "mt": "Kvaliteten er flott og materialet føles veldig solid.",
+    "verdict": "Yes",
+    "verdict_original": "No",
+    "relabel_note": "Relabelled No->Yes 2026-06-12 after arbitration. Birgitte's verdict: 'Both partly — Kvaliteten er flott is publishable, but god is a better choice.' MT is confirmed publishable; original label was an over-strict style preference, not a publish-blocking error.",
+    "pe": "Kvaliteten er god og materialet føles veldig solid.",
+    "reason": "Based on context it is better to use \"god\" as a translation for \"great\", as this is more idiomatically correct.",
+    "mt_red": [
+      "flott "
+    ],
+    "pe_red": [
+      " god"
+    ]
+  },
+  {
+    "row": 6,
+    "source": "Adjustable Snapback rear closure for a more personlised fit.",
+    "mt": "Justerbar Snapback-lukking bak for en mer personlig passform.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 7,
+    "source": "Lightweight, protective hat for use in intense sun, heat, and humidity.",
+    "mt": "Lett, beskyttende lue for bruk i intens sol, varme og fuktighet.",
+    "verdict": "No",
+    "pe": "Lett, beskyttende hatt for bruk i intens sol, varme og fuktighet.",
+    "reason": "I have changed \"lue\" to \"hatt\". Please note though that the word \"hat\" can be translated in different ways depending on what type of hat this is refering to.",
+    "mt_red": [
+      "lue"
+    ],
+    "pe_red": [
+      "hatt"
+    ]
+  },
+  {
+    "row": 8,
+    "source": "Low Profile Cotton Baseball Cap Dad Hat Polo Style Unconstructed Adjustable",
+    "mt": "Baseballhette i bomull med lav profil Pappa Hat Polostil Ukonstruert justerbar",
+    "verdict": "No",
+    "pe": "Baseballcaps i bomull med lav profil Pappa Hatt Polostil Ukonstruert justerbar",
+    "reason": "Changed \"Baseballhette\" to the more commonly used translation \"Baseballcaps\". Changed \"Hat\" to \"Hatt\" as \"Hat\" has a completely different meaning in Norwegian (it essentially means \"to hate something\")",
+    "mt_red": [
+      "Baseballhette",
+      "Hat"
+    ],
+    "pe_red": [
+      "Baseballcaps",
+      "Hatt"
+    ]
+  },
+  {
+    "row": 9,
+    "source": "Unisex Adjustable Vintage Washed Denim Baseball Cap Dad Hat.Stay Your Fashionable Easy Fit Baseball Cap.Adjustable On The Back, You Can Easily Custom Fit The Cap On Your Head And Ensure A Secure Fit And Maximum Comfort At All Times.",
+    "mt": "Unisex justerbar vintage vasket denim baseballcap pappa hat. Hold din fasjonable baseballhette med enkel passform. Justerbar på baksiden, du kan enkelt tilpasse hetten på hodet og sikre en sikker passform og maksimal komfort til enhver tid.",
+    "verdict": "No",
+    "pe": "Unisex Justerbar Vintage Vasket denim Baseballcap Pappa Hatt. Hold din fasjonable baseballcaps med enkel passform. Justerbar på baksiden, du kan enkelt tilpasse capsen på hodet og sikre en sikker passform og maksimal komfort til enhver tid.",
+    "reason": "Changed \"Baseballhette\" to the more commonly used translation \"Baseballcaps\". Also changed \"hetten\" to \"capsen\" for consistency. Changed \"Hat\" to \"Hatt\" as \"Hat\" has a completely different meaning in Norwegian (it essentially means \"to hate something\")",
+    "mt_red": [
+      "hat",
+      "baseballhette",
+      "hetten "
+    ],
+    "pe_red": [
+      " Hatt.",
+      " baseballcaps",
+      "capsen "
+    ]
+  },
+  {
+    "row": 10,
+    "source": "Leila Marcus Nursing Student Heart Beat Lunch Tote Bag Bags Awesome Lunch Handbag Lunchbox Box for School Work Outdoor",
+    "mt": "Leila Marcus Nursing Student Heart Beat Lunch Tote Bag Vesker Fantastisk lunsjveske Lunsjboks for skolearbeid utendørs",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 11,
+    "source": "100% Polyester, With Adjustable Strap",
+    "mt": "100% polyester, med justerbar stropp",
+    "verdict": "No",
+    "pe": "100 % polyester, med justerbar stropp",
+    "reason": "There should be a space between the number and % sign. Preferably a non-breakable space.",
+    "mt_red": [
+      "100%"
+    ],
+    "pe_red": [
+      "100 %"
+    ]
+  },
+  {
+    "row": 12,
+    "source": "Dimension :",
+    "mt": "Dimensjon:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 13,
+    "source": "11.5in X 7.5in X 5.7in",
+    "mt": "11,5 tommer X 7,5 tommer X 5,7 tommer",
+    "verdict": "Yes",
+    "verdict_original": "No",
+    "relabel_note": "Relabelled No->Yes 2026-06-12 during calibration false-pass review. The 'No' label contradicts the LL's own recorded annotation: the reason states inch is acceptable and the MT was NOT edited, pe is empty, and no error spans were marked. All evidence except the label indicates the segment is publishable. Internal-inconsistency correction, not a judgment override.",
+    "pe": "",
+    "reason": "Measurements should be localized depending on context. (As inch is used in some cases in Norwegian, I have not edited the post-edited translation)",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 14,
+    "source": "Multipurpose:Handbags,Cross Body Bag,Children's Shoulders Back",
+    "mt": "Flerbruk:Håndvesker, Cross Body Bag, Barnas skuldre Rygg",
+    "verdict": "No",
+    "pe": "Flere bruksområder:Håndvesker, Crossbody-veske, Barnas skuldre Rygg",
+    "reason": "Changed \"Flerbruk\" til \"Flere bruksområder\" as this is a better translation in this context",
+    "mt_red": [
+      "Flerbruk",
+      "Cross Body Bag"
+    ],
+    "pe_red": [
+      "Flere bruksområder",
+      "Crossbody-veske"
+    ]
+  },
+  {
+    "row": 15,
+    "source": "The Flat Bottom Keeps It Upright, Perfect For Bottles Or Dishes That You Don't Want Tipping Over",
+    "mt": "Den flate bunnen holder den oppreist, perfekt for flasker eller retter som du ikke vil velte",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 16,
+    "source": "Delivery:7-16 Busin Days",
+    "mt": "Levering: 7-16 forretningsdager",
+    "verdict": "No",
+    "pe": "Levering: 7–16 forretningsdager",
+    "reason": "En dash should be added in nummerical ranges",
+    "mt_red": [
+      "7-16 "
+    ],
+    "pe_red": [
+      "7–16 "
+    ]
+  },
+  {
+    "row": 17,
+    "source": "Nursing Student Heart Beat Lunch Bag Is 100% Brand NewIt Can Be Repeated Cleaning, Easy To DryIdeal For Office/work Or School/college You Can Use It To Take Lunch, Drinks, Breast Milk And Etc",
+    "mt": "Nursing Student Heart Beat Lunchpose er 100% splitter nyDen kan rengjøres gjentatt, lett å tørkeIdeell for kontor/arbeid eller skole/høyskole Du kan bruke den til å ta lunsj, drikke, morsmelk og etc.",
+    "verdict": "No",
+    "pe": "Nursing Student Heart Beat Lunchpose er 100 % splitter nyDen kan rengjøres gjentatte ganger, lett å tørkeIdeell for kontor/arbeid eller skole/høyskole Du kan bruke den til å ta lunsj, drikke, morsmelk og etc.",
+    "reason": "There should be a space between the number and % sign. Preferably a non-breakable space.",
+    "mt_red": [
+      "100%",
+      "gjentatt"
+    ],
+    "pe_red": [
+      "100 %",
+      "gjentatte ganger"
+    ]
+  },
+  {
+    "row": 18,
+    "source": "Compatible with Samsung Gear S3 Frontier/Classic - Leather Watch Wrist Band Strap Bracelet with Quick-Release Pins (Vertical Stylized Sea)",
+    "mt": "Kompatibel med Samsung Gear S3 Frontier/Classic - Armbåndbånd i lærklokke med hurtigutløserpinner (vertikal stilisert sjø)",
+    "verdict": "No",
+    "pe": "Kompatibel med Samsung Gear S3 Frontier/Classic - Klokke med armbånd i lær med hurtigutløserpinner (vertikal stilisert sjø)",
+    "reason": "\"Armbåndbånd i lærklokke\" is not idiomatically correct and should be edited.",
+    "mt_red": [
+      "Armbåndbånd i lærklokke"
+    ],
+    "pe_red": [
+      "Klokke med armbånd i lær"
+    ]
+  },
+  {
+    "row": 19,
+    "source": "Compatible with:",
+    "mt": "Kompatibel med:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 20,
+    "source": "SAMSUNG GEAR S3 FRONTIER / CLASSIC.",
+    "mt": "SAMSUNG GEAR S3 FRONTIER/KLASSISK.",
+    "verdict": null,
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 21,
+    "source": "Includes 2 Quick-Release Pins for easy installation.",
+    "mt": "Inkluderer 2 hurtigutløserpinner for enkel installasjon.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 22,
+    "source": "Stainless steel C-shape clasp, simple and elegant.",
+    "mt": "C-formet lås i rustfritt stål, enkel og elegant.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 23,
+    "source": "Made of High Quality PU leather, waterproof, smooth and flexible.",
+    "mt": "Laget av høy kvalitet PU skinn, vanntett, glatt og fleksibel.",
+    "verdict": null,
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 24,
+    "source": "Over 1000 different patterns to choose from.",
+    "mt": "Over 1000 forskjellige mønstre å velge mellom.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 25,
+    "source": "Replacement Wristband for the SAMSUNG GEAR S3 FRONTIER / CLASSIC.",
+    "mt": "Erstatningsarmbånd til SAMSUNG GEAR S3 FRONTIER/CLASSIC.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 26,
+    "source": "CNC Folding Extendable Motorcycle Brake Clutch Levers for Ducati 1098 S Tricolor 2007 2008",
+    "mt": "CNC sammenleggbare forlengbare motorsykkelbremsekoblingsspaker for Ducati 1098 S Tricolor 2007 2008",
+    "verdict": "No",
+    "pe": "CNC sammenleggbare forlengbare bremseclutchhendler for motorsykkel for Ducati 1098 S Tricolor 2007 2008",
+    "reason": "the translation \"motorsykkelbremsekoblingsspaker\" is to long and should be divided into smaler parts",
+    "mt_red": [],
+    "pe_red": [
+      "bremseclutchhendler for motorsykkel"
+    ]
+  },
+  {
+    "row": 27,
+    "source": "Laser Engraved Logo:1098",
+    "mt": "Lasergravert logo: 1098",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 28,
+    "source": "Fitment: for Ducati 1098 S Tricolor 2007 2008",
+    "mt": "Montering: til Ducati 1098 S Tricolor 2007 2008",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 29,
+    "source": "ADJUSTABLE REACH: by simply adjusting a setscrew on the Yang hua lever, the reach can be adjusted to accommodate the smallest to the largest hands and gives the best clutch or brake response.",
+    "mt": "JUSTERBAR REKKEVIDDE: Ved ganske enkelt å justere en setskrue på Yang hua-spaken, kan rekkevidden justeres for å imøtekomme de minste til de største hendene og gir best mulig clutch- eller bremserespons.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 30,
+    "source": "ADVABTAGE:",
+    "mt": "ADVANTAGE:",
+    "verdict": "No",
+    "pe": "FORDEL:",
+    "reason": "There seems to be a spelling mistake in the source, and the target is not properly translated. Presumably the source should be \"Advantage\", and therefor the translation should be \"Fordel\"",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 31,
+    "source": "This levers touch feel anti-slip rough surface lever can make your fingers feel perfectly on the levers , high quality CNC levers handle increases durability and hardness , prevent easy bending or breaking in the event of a crash . and the anodized with beautiful glossy and vibrant finish, which increases resistance to corrosion and wear, makes your bike stand out from the crowd .",
+    "mt": "Denne spakene berøringsfølsomme, sklisikre, ru overflatehåndtak kan få fingrene til å føles perfekt på spakene, CNC-spakhåndtaket av høy kvalitet øker holdbarheten og hardheten, forhindrer lett bøyning eller brudd i tilfelle krasj. og den anodiserte med vakker blank og levende finish, som øker motstanden mot korrosjon og slitasje, gjør at sykkelen din skiller seg ut fra mengden.",
+    "verdict": "No",
+    "pe": "Denne spakene berøringsfølsomme, sklisikre, ru overflatehåndtak kan få fingrene til å føles perfekt på spakene, CNC-spakhåndtaket av høy kvalitet øker holdbarheten og hardheten, forhindrer lett bøyning eller brudd i tilfelle krasj. og den anodiserte med vakker blank og levende finish, som øker motstanden mot korrosjon og slitasje, gjør at sykkelen din skiller seg ut fra mengden.",
+    "reason": "The post-edited segment should be edited as it is not grammatically correct",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 32,
+    "source": "HIGH QUALITY COMPONENTS:",
+    "mt": "KOMPONENTER AV HØY KVALITET:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 33,
+    "source": "Levers use chrome steel precision sealed bearings, stainless steel pivot and bushing parts, Chrome Silicon cantilever springs, aerospace grade stainless steel and chromoly fasteners, and specially designed and manufactured fasteners.",
+    "mt": "Spakene bruker presisjonsforseglede lagre i kromstål, dreie- og bøssingsdeler i rustfritt stål, krongfjærer i krom silisium, rustfritt stål og kromolifester i luftfartskvalitet, og spesialdesignede og produserte festemidler.",
+    "verdict": "No",
+    "pe": "Spakene bruker presisjonsforseglede lagre i kromstål, dreie- og bøssingsdeler i rustfritt stål, krongfjærer i krom silisium, rustfritt stål og kromolifester i luftfartskvalitet, og spesialdesignede og produserte festemidler.",
+    "reason": "Segment should be edited  with focus on correct terminology",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 34,
+    "source": "Condition:",
+    "mt": "Tilstand:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 35,
+    "source": "Brand New,High Quality Material:",
+    "mt": "Helt nytt materiale av høy kvalitet:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 36,
+    "source": "CNC 6061 Billet Aluminum Feature:",
+    "mt": "CNC 6061 Billet Aluminium Funksjon:",
+    "verdict": null,
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 37,
+    "source": "Extending &amp; Folding Logo:",
+    "mt": "Utvidende og sammenleggbar logo:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 38,
+    "source": "TORNADO TRE Item is easy to install without instructions Color:",
+    "mt": "TORNADO TRE Varen er enkel å installere uten instruksjoner Farge:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 39,
+    "source": "Gold,Red,Blue,Titanium,Black?blue1 Fitment: for Ducati 1098 S Tricolor 2007 2008 ( Please Ensure This Part Fits For Your Motorcycle Before order ) package:",
+    "mt": "Gull, rød, blå, titan, svart? blue1 Montering: for Ducati 1098 S Tricolor 2007 2008 (Forsikre deg om at denne delen passer til motorsykkelen din før bestilling) pakke:",
+    "verdict": "Yes",
+    "verdict_original": "No",
+    "relabel_note": "Relabelled No->Yes 2026-06-12 after arbitration. Birgitte's verdict: 'AI right — should be mirrored as a broken token.' The token 'blue1' derives from corrupted source 'Black?blue1'; broken-token rule applies. Original reason 'term has not been translated' does not apply to corrupted source fragments.",
+    "pe": "Gull, rød, blå, titan, svart? blå1 Montering: for Ducati 1098 S Tricolor 2007 2008 (Forsikre deg om at denne delen passer til motorsykkelen din før bestilling) pakke:",
+    "reason": "Term has not been translated",
+    "mt_red": [],
+    "pe_red": [
+      " blå"
+    ]
+  },
+  {
+    "row": 40,
+    "source": "1 brake and clutch lever",
+    "mt": "1 brems- og koblingsspak",
+    "verdict": "No",
+    "pe": "1 brems- og clutchhendel",
+    "reason": "the correct terminology has not been used. Segment should therefor be edited",
+    "mt_red": [],
+    "pe_red": [
+      " clutchhendel"
+    ]
+  },
+  {
+    "row": 41,
+    "source": "VTYOSQ shower curtain doormat Schnauzer Easter Spring Eggs Dog Breed pet Pink Placemats for Dining Table,Washable Placemat Set of 6, 12x12 inches lovely24053",
+    "mt": "VTYOSQ dusjforheng dørmatte Schnauzer Easter Spring Eggs Dog Breed kjæledyr Rosa bordskåler til spisebord, vaskbar bordstablett sett med 6, 12x12 tommer lovely24053",
+    "verdict": "No",
+    "pe": "VTYOSQ dusjforheng dørmatte Schnauzer Påske Vår Egg Hunderase kjæledyr Rosa bordbrikker til spisebord, vaskbart bordbrikkesett på 6, 12x12 tommer lovely24053",
+    "reason": "Terms have not been translated. \"Bordskåler\" is not the correct translation of \"placemats\". The correct translation would be \"bordbrikker\". Same with \"bordstablett sett\". It should be \"bordbrikkesett\"",
+    "mt_red": [
+      "Easter Spring Eggs Dog Breed",
+      "bordskåler",
+      "bordstablett sett "
+    ],
+    "pe_red": [
+      " Påske Vår Egg Hunderase ",
+      "bordbrikker ",
+      "bordbrikkesett på",
+      "6, 12x12 tommer "
+    ]
+  },
+  {
+    "row": 42,
+    "source": "Material Quality:Placemats Woven With High Quality Eco Friendly PVC Materials ,effective Heat Resistance Of Approximately 185蚌(85?)",
+    "mt": "Materialkvalitet: Placemats vevd med miljøvennlige PVC-materialer av høy kvalitet, effektiv varmebestandighet på omtrent 185 (85?)",
+    "verdict": "No",
+    "pe": "Materialkvalitet: Bordbrikker vevd med miljøvennlige PVC-materialer av høy kvalitet, effektiv varmebestandighet på omtrent 185 (85?)",
+    "reason": "\"Placemats\" is not translated. It should be \"bordbrikker\" . Also measurements is not properly localized. The source also contains text in a different language.",
+    "mt_red": [
+      "Placemats ",
+      "omtrent 185 (85?)"
+    ],
+    "pe_red": [
+      " ",
+      "185 (85?)"
+    ]
+  },
+  {
+    "row": 43,
+    "source": "Package Size:One size.All Placemats Are Cut By Hand,Maybe Approximately 0.4 Inches Error",
+    "mt": "Pakkestørrelse: En størrelse. Alle bordskåler er kuttet for hånd, kanskje omtrent 0,4 tommer feil",
+    "verdict": "No",
+    "pe": "Pakkestørrelse: En størrelse. Alle bordbrikker er kuttet for hånd, kanskje omtrent 0,4 tommer feil",
+    "reason": "wrong translation for \"placemats\" used",
+    "mt_red": [
+      "bordskåler",
+      "0,4 tommer "
+    ],
+    "pe_red": [
+      "bordbrikker",
+      "0,4 tommer "
+    ]
+  },
+  {
+    "row": 44,
+    "source": "Home Decoration:Fashion Placemat Would Be A Perfect Decoration And Life Quality Of Your Home,dining Hall, Kitchen,hotel And Business Office",
+    "mt": "Hjemmedekorasjon: Moteplacemat ville være en perfekt dekorasjon og livskvalitet for ditt hjem, spisestue, kjøkken, hotell og forretningskontor",
+    "verdict": "No",
+    "pe": "Hjemmedekorasjon: Moteriktig bordbrikke ville være en perfekt dekorasjon og livskvalitet for ditt hjem, spisestue, kjøkken, hotell og forretningskontor",
+    "reason": "wrong translation for \"placemats\" used",
+    "mt_red": [
+      "Moteplacemat "
+    ],
+    "pe_red": [
+      "Moteriktig bordbrikke "
+    ]
+  },
+  {
+    "row": 45,
+    "source": "What You Get:High Quality PVC Placemats In ,If You Have Any Problem Please Contact Us Whenever You Need,Friendly Reminder, Woven Mat So It May Leak Water Lightly",
+    "mt": "Hva du får: PVC-bordstabletter av høy kvalitet, hvis du har problemer, vennligst kontakt oss når du trenger, vennlig påminnelse, vevd matte slik at det kan lekke vann lett",
+    "verdict": "No",
+    "pe": "Hva du får: PVC-bordbrikker av høy kvalitet, hvis du har problemer, kontakt oss gjerne ved behov, vennlig påminnelse, vevd matte slik at det kan lekke vann lett",
+    "reason": "wrong translation for \"placemats\" used. Also idiomatically the word \"vennligst\" is not often used in Norwegian",
+    "mt_red": [
+      "bordstabletter",
+      "vennligst "
+    ],
+    "pe_red": [
+      "bordbrikker",
+      " kontakt oss gjerne ved behov,"
+    ]
+  },
+  {
+    "row": 46,
+    "source": "The delivery time is 8-16days",
+    "mt": "Leveringstiden er 8-16 dager",
+    "verdict": "No",
+    "pe": "Leveringstiden er 8–16 dager",
+    "reason": "En dash should be added in nummerical ranges",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 47,
+    "source": "High-quality And PVC Material,it Can Be Cropped To Any Shape You Want.",
+    "mt": "Høykvalitets- og PVC-materiale, det kan beskjæres til hvilken som helst form du ønsker.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 48,
+    "source": "Placemats Are Laid Flat Instead Of Rolled Up So They Don't Deform Easily",
+    "mt": "Placemats legges flatt i stedet for rullet opp, slik at de ikke deformeres lett",
+    "verdict": "No",
+    "pe": "Bordbrikker legges flatt i stedet for rullet opp, slik at de ikke deformeres lett",
+    "reason": "Term has not been translated",
+    "mt_red": [
+      "Placemats"
+    ],
+    "pe_red": [
+      "ordbrikker "
+    ]
+  },
+  {
+    "row": 49,
+    "source": "Galaxy Girl Images Headband Womens Bandana Multifunctional Mens Balaclava, Neck Warmer, Face Mask, Neckerchief Wristband",
+    "mt": "Galaxy Girl Images Pannebånd Kvinners Bandana Multifunksjonell menns balaclava, nakkevarmer, ansiktsmaske, halstørkle armbånd",
+    "verdict": "No",
+    "pe": "Galaxy Girl-bilder Pannebånd Kvinners Bandana Multifunksjonell menns balaclava, nakkevarmer, ansiktsmaske, halstørkle armbånd",
+    "reason": "term has not been translated. Used terminology should be checked (especially the translation of \"Neck warmer\")",
+    "mt_red": [
+      " Images "
+    ],
+    "pe_red": [
+      "bilder",
+      "akkevarmer"
+    ]
+  },
+  {
+    "row": 50,
+    "source": "Microfiber, Made Of High-quality Materials, Soft And Skin-friendly.",
+    "mt": "Mikrofiber, laget av materialer av høy kvalitet, myk og hudvennlig.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 51,
+    "source": "It Can Against The Sun, Wind, Dust, Snow, So You Can Enjoy Your Outdoor Activites.",
+    "mt": "Det kan mot sol, vind, støv, snø, slik at du kan nyte utendørsaktivitetene dine.",
+    "verdict": "No",
+    "pe": "Det kan motstå sol, vind, støv, snø, slik at du kan nyte utendørsaktivitetene dine.",
+    "reason": "english source is missing a word. The word should be included in the translation so that it makes sense",
+    "mt_red": [],
+    "pe_red": [
+      "motstå "
+    ]
+  },
+  {
+    "row": 52,
+    "source": "Head wrap is sweat wicking and dry quickly to keep your heathy in your daily life and adventure.",
+    "mt": "Hodeomslaget er svettetransporterende og tørker raskt for å holde deg frisk i ditt daglige liv og eventyr.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 53,
+    "source": "Perfect Touching Feeling.",
+    "mt": "Perfekt berøringsfølelse.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 54,
+    "source": "Wrap The Shawl Freely Around Any Outfit And It Will Keep You Warm All Day Long.",
+    "mt": "Pakk sjalet fritt rundt ethvert antrekk, og det vil holde deg varm hele dagen.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 55,
+    "source": "UV and windproof for a pleasant experience.",
+    "mt": "UV- og vindtett for en hyggelig opplevelse.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 56,
+    "source": "Use it as a helmet liner and there is no fog on your goggles.",
+    "mt": "Bruk den som hjelmfôr, og det er ingen tåke på vernebrillene dine.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 57,
+    "source": "B07V3MSXQL",
+    "mt": "B07V3MSXQL",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 58,
+    "source": "145 PCS Binder Clips Black Paper Clamps Assorted 6 Sizes Foldback Paper Clips with Box for Office School and Home Supplies",
+    "mt": "145 PCS Binder Clips Svarte papirklemmer Assortert 6 størrelser Sammenleggbare papirklemmer med eske for kontorskole- og hjemmeutstyr",
+    "verdict": "No",
+    "pe": "145 STK Binder Clips Svarte papirklemmer Assortert 6 størrelser Sammenleggbare papirklemmer med eske for kontor-, skole- og hjemmeutstyr",
+    "reason": "\"145 PCS Binder Clips\" has not been translated. \"kontorskole\" is not idiomatically correct",
+    "mt_red": [
+      "kontorskole- og hjemmeutstyr"
+    ],
+    "pe_red": [
+      "145 STK Binder Clips",
+      "kontor-, skole- og hjemmeutstyr"
+    ]
+  },
+  {
+    "row": 59,
+    "source": "Premium material: the clips made of high quality iron material, rust-resistant, sturdy, durable and reusable, the stainless steel handle are flexible and can be folded or deleted",
+    "mt": "Førsteklasses materiale: klemmene laget av jernmateriale av høy kvalitet, rustbestandig, solid, holdbar og gjenbrukbar, håndtaket i rustfritt stål er fleksibelt og kan brettes eller slettes",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 60,
+    "source": "Assorted size and large quantity:",
+    "mt": "Assortert størrelse og stor mengde:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 61,
+    "source": "6 different sizes black binder clips totally 145 pcs, they are respectively 5 x 51mm/2\", 6 x 41mm/1.6\", 6 x 32mm/1.25\", 25 x 25 mm/1\", 30 x 19mm/0.75\", 73 x 15mm/0.6\"",
+    "mt": "6 forskjellige størrelser svarte bindeklemmer totalt 145 stk, de er henholdsvis 5 x 51mm/2\", 6 x 41mm/1.6\", 6 x 32mm/1.25\", 25 x 25 mm/1\", 30 x 19mm/0.75\", 73 x 15mm/0.6\"",
+    "verdict": "No",
+    "pe": "6 forskjellige størrelser svarte bindeklemmer totalt 145 stk, de er henholdsvis 5 x 51 mm / 2\", 6 x 41 mm /1,6\", 6 x 32 mm / 1,25\", 25 x 25 mm / 1\", 30 x 19 mm /0,75\", 73 x 15 mm / 0,6\"",
+    "reason": "There are missing spaces. These should be added.",
+    "mt_red": [],
+    "pe_red": [
+      "5 x 51 mm / 2\", 6 x 41 mm /1,6\", 6 x 32 mm / 1,25\", 25 x 25 mm / 1\", 30 x 19 mm /0,75\", 73 x 15 mm / 0,6\""
+    ]
+  },
+  {
+    "row": 62,
+    "source": "Wide application: manage different thickness files by different size clips, help to fix and seal some specific things, DIY some useful small tools like phone holder, simple hook and cable holder",
+    "mt": "Bred applikasjon: administrer forskjellige tykkelsesfiler med klipp i forskjellige størrelser, hjelp til å fikse og forsegle noen spesifikke ting, gjør selv noen nyttige små verktøy som telefonholder, enkel krok og kabelholder",
+    "verdict": "No",
+    "pe": "Bred applikasjon: administrer filer i forskjellige tykkelser med klipps i forskjellige størrelser, hjelp til å fikse og forsegle noen spesifikke ting, lag  noen nyttige små verktøy som telefonholder, enkel krok og kabelholder selv",
+    "reason": "sentence structure needs editing . It is not gramatically correct.",
+    "mt_red": [],
+    "pe_red": [
+      "administrer filer i forskjellige tykkelser",
+      "klipps",
+      "lag  noen nyttige små verktøy som telefonholder, enkel krok og kabelholder selv"
+    ]
+  },
+  {
+    "row": 63,
+    "source": "Warm tips: these binder clips can fasten object tightly, please keep them away from your baby child and protect them from binding by the clips accidentally",
+    "mt": "Varme tips: disse bindemiddelklemmene kan feste gjenstanden tett, hold dem borte fra babybarnet ditt og beskytt dem mot binding av klipsene ved et uhell",
+    "verdict": "No",
+    "pe": "Gode tips: disse bindeklemmene kan feste gjenstanden tett, hold dem borte fra barnet ditt og beskytt dem slik at de ikke klemmer seg i klipsene ved et uhell",
+    "reason": "\"Varme tips\" is not an idiomatically correct translation. \"bindemiddelklemmene\" is not the correct translation. Also \"babybarnet\" is not a grammatically/idiomatically correct word.",
+    "mt_red": [
+      "Varme tips:",
+      "bindemiddelklemmene",
+      "babybarnet "
+    ],
+    "pe_red": [
+      "Gode tips",
+      " bindeklemmene",
+      "arnet dit"
+    ]
+  },
+  {
+    "row": 64,
+    "source": "Useful storage box: come with a transparent storage box, the binder clips can be collected and fetch conveniently, easily for carrying and store",
+    "mt": "Nyttig oppbevaringsboks: leveres med en gjennomsiktig oppbevaringsboks, bindemiddelklemmene kan samles og hentes praktisk, enkelt for å bære og oppbevare",
+    "verdict": "No",
+    "pe": "Nyttig oppbevaringsboks: leveres i en gjennomsiktig oppbevaringsboks, bindeklemmene kan samles inn og hentes praktisk, enkelt å bære med seg og oppbevare",
+    "reason": "sentence structure needs editing . It is not gramatically correct.",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 65,
+    "source": "Package Includes:",
+    "mt": "Pakken inneholder:",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 66,
+    "source": "145 Pcs Binder Clips with Box",
+    "mt": "145 stk bindeklemmer med eske",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 67,
+    "source": "Upstart Battery 30 Replacement for Volta Bolido 4500-4599 Style S Vacuum Bags - Compatible with Volta S-Bag Vacuum Bags (10-Pack - 3 Vacuum Bags per Pack)",
+    "mt": "Upstart Battery 30 Erstatning for Volta Bolido 4500-4599 Style S vakuumposer - kompatibel med Volta S-Bag vakuumposer (10-pakke - 3 vakuumposer per pakke)",
+    "verdict": "No",
+    "pe": "Upstart Battery 30 Erstatning for Volta Bolido 4500-4599 Style S støvsugerposer - kompatibel med Volta S-Bag støvsugerposer (10-pakke - 3 støvsugerposer per pakke)",
+    "reason": "\"vakuumposer\" is not the correct translation of \"vacuum bags\". The correct translation is \"støvsugerposer\"",
+    "mt_red": [],
+    "pe_red": [
+      "pose",
+      "poser"
+    ]
+  },
+  {
+    "row": 68,
+    "source": "Replacement Volta Bolido 4500-4599 Style S Vacuum Bags; Quantity, 30 (10 Pack - 3 Vacuum Bags per Pack)",
+    "mt": "Erstatning Volta Bolido 4500-4599 Style S vakuumposer; Antall, 30 (10 Pakke - 3 Vakuumposer per Pakke)",
+    "verdict": "No",
+    "pe": "Erstatning Volta Bolido 4500-4599 Style S støvsugerposer; Antall, 30 (10 Pakke - 3 støvsugerposer per pakke)",
+    "reason": "\"vakuumposer\" is not the correct translation of \"vacuum bags\". The correct translation is \"støvsugerposer\"",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 69,
+    "source": "Replaces Volta S-Bag Vacuum Bags.",
+    "mt": "Erstatter Volta S-Bag vakuumposer.",
+    "verdict": "No",
+    "pe": "Erstatter Volta S-Bag støvsugerposer.",
+    "reason": "\"vakuumposer\" is not the correct translation of \"vacuum bags\". The correct translation is \"støvsugerposer\"",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 70,
+    "source": "Classic Style High Quality Paper Dust Bag",
+    "mt": "Klassisk stil høykvalitets papirstøvpose",
+    "verdict": "No",
+    "pe": "Papirstøvpose av høy kvalitet i klassisk stil",
+    "reason": "sentence structure needs editing. It is not gramatically correct.",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 71,
+    "source": "Don't let dust and dirt accumulate inside the vacuum then spreading it around your house.",
+    "mt": "Ikke la støv og smuss samle seg inne i støvsugeren og spre det rundt huset ditt.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 72,
+    "source": "Lengthen the life of your vacuum cleaner plus improve the effectiveness and suction of your vacuum by installing a new bag with the same great quality as the name brand but at an affordable price.",
+    "mt": "Forleng levetiden til støvsugeren din pluss forbedre effektiviteten og sugingen av støvsugeren ved å installere en ny pose med samme gode kvalitet som navnemerket, men til en overkommelig pris.",
+    "verdict": "No",
+    "pe": "Forleng levetiden til støvsugeren din, pluss forbedre støvsugerens effektivitet og suging ved å installere en ny pose med samme gode kvalitet som navnemerket, men til en overkommelig pris.",
+    "reason": "the subject (støvsugeren) should be moved to be more gramatically correct.",
+    "mt_red": [],
+    "pe_red": [
+      "forbedre støvsugerens effektivitet og suging ved å installere en ny pose "
+    ]
+  },
+  {
+    "row": 73,
+    "source": "We recommend replacing your vacuum bags every 30 to 60 days for best performance .",
+    "mt": "Vi anbefaler at du bytter ut vakuumposene hver 30. til 60. dag for best ytelse.",
+    "verdict": "No",
+    "pe": "Vi anbefaler at du bytter ut støvsugerposene hver 30. til 60. dag for best ytelse.",
+    "reason": "wrong terminology used. \"vakuumposene\" should be \"støvsugerposene\"",
+    "mt_red": [
+      "akuumposene"
+    ],
+    "pe_red": [
+      "støvsugerposene"
+    ]
+  },
+  {
+    "row": 74,
+    "source": "Vacuuming with a high-efficiency filter cleans the air inside your house.",
+    "mt": "Støvsuging med et høyeffektivt filter renser luften inne i huset ditt.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 75,
+    "source": "Ideal for those who suffer from dust-related or allergic discomforts.",
+    "mt": "Ideell for de som lider av støvrelaterte eller allergiske ubehag.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 76,
+    "source": "Removes dirt, dust and allergens while you vacuum to improve the air quality of your home.",
+    "mt": "Fjerner smuss, støv og allergener mens du støvsuger for å forbedre luftkvaliteten i hjemmet ditt.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 77,
+    "source": "Made to neutralize odors at the source, releases clean, odor-free air into your home as you vacuum.",
+    "mt": "Laget for å nøytralisere lukt ved kilden, slipper ren, luktfri luft inn i hjemmet ditt mens du støvsuger.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 78,
+    "source": "Breathe easier and feel refreshed by filtering the air inside your household leading to overall better health.",
+    "mt": "Pust lettere og føl deg uthvilt ved å filtrere luften inne i husholdningen din, noe som fører til generell bedre helse.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 79,
+    "source": "Please check your vacuum to make sure you are purchasing the correct parts.",
+    "mt": "Sjekk støvsugeren for å forsikre deg om at du kjøper de riktige delene.",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 80,
+    "source": "On Sale for a Limited Time!",
+    "mt": "På salg i en begrenset periode!",
+    "verdict": "Yes",
+    "pe": "",
+    "reason": "",
+    "mt_red": [],
+    "pe_red": []
+  },
+  {
+    "row": 81,
+    "source": "30 Volta Bolido 4500-4599 Style S Vacuum Bags - Replaces Volta S-Bag Vacuum Bags.",
+    "mt": "30 Volta Bolido 4500-4599 Style S vakuumposer - erstatter Volta S-Bag vakuumposer.",
+    "verdict": "No",
+    "pe": "30 Volta Bolido 4500-4599 Style S støvsugerposer - erstatter Volta S-Bag støvsugerposer.",
+    "reason": "wrong terminology used. \"vakuumposer\" should be \"støvsugerposer\"",
+    "mt_red": [],
+    "pe_red": [
+      "støvsugerpose",
+      "poser."
+    ]
+  }
+]
