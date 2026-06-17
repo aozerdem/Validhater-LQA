@@ -102,7 +102,7 @@ ACCURACY
 - Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices.
 - Omission: Nothing present in the source may be omitted in the target — including repetitive content, warranty/delivery info, marketing text. EXCEPTION: Possessive pronouns ('our', 'your', 'its') may be dropped when the meaning remains unambiguous from context — this is standard NB-NO usage and is NOT an omission error (e.g. 'Our Hard Case' → 'Hardt deksel' is acceptable).
 - Addition: No text may appear in the target that is not in the source.
-- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, or (c) the SG explicitly allows it.
+- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context). Do not flag these as untranslated content.
 Bracketed section labels [Like This] must NOT be translated.
 If the source contains a structural label such as [Design Description],
 [Material Description], [Product Performance], [Accessory Construction], or any
@@ -130,6 +130,10 @@ STYLE
 - Voice/Tone: Comparatively formal Norwegian. Active voice preferred.
 - Slogans/Quotes: Leave in source language, enclose in quotation marks.
 - Wrong language in source: If source contains a non-English word that is clearly a slogan/model name, leave it. Otherwise omit the nonsensical part and translate the rest.
+- Title restructuring: Long English noun-stack product titles are routinely restructured into readable Norwegian phrases using em-dash ( – ) separators. Do NOT flag this as an omission or word-order deviation.
+- Sentence splitting: Long EN run-on marketing sentences are routinely split into two or more shorter NB sentences. Do NOT flag sentence splitting as an addition or structural error.
+- Marketing condensation: Promotional superlatives and filler may be condensed or softened rather than translated word-for-word. Do NOT flag reasonable condensation as an omission unless meaningful content is lost.
+- Care labels: Care-label instructions are rendered as noun phrases ("tørketrommel uten varme", "rensing") rather than imperative verbs. This is correct NB-NO convention — do not penalise.
 
 === RULES: NB-NO LANGUAGE APPENDIX ===
 
@@ -227,6 +231,21 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "Case" (watch/clock context) → "hus" (e.g. "urhuset"). Do not use "deksel" for
   watch cases — "deksel" is correct only for phone/device cases.
 - "mouse pad" → "musematte" preferred over "musepute".
+- "Dimensions" (spec label) → "Mål". "Dimensjoner" is a calque and incorrect in product spec context.
+- "tablecloth" → "duk". "Bordduk" is incorrect — it is a compound error.
+- "heavy duty" → "kraftig". Do not translate literally.
+- "watch movement" / "clock movement" → "urverk" (e.g. "kvartsurverk"). The calque
+  "bevegelse" / "kvartsbevegelse" is a confirmed error — flag it.
+- "Return Policy" → "Returvilkår". "Returpolicy" is an anglicism and incorrect.
+- "Cross body bag" / "crossbody bag" → "skulderveske". Do not translate literally.
+- "Throw Pillow Cover" → "putetrekk". "Throw" is dropped — this is correct and not an omission.
+- "charm" (jewellery context) → kept as "charm" in Norwegian (confirmed Amazon loanword).
+  Do not flag as untranslated. "Anheng" would be a mistranslation here.
+- "silver tone" → "sølvfarget". "Sølvtone" is a calque and incorrect.
+- "spot clean" → "flekkrens" or "punktrens". "Spotrengjøring" is a calque error.
+- "dry clean" (care label) → "rensing". "Tørrens" is incorrect in most care-label contexts.
+- "stain resistant" / "fade resistant" → use "-bestandig" suffix compounds: "flekkbestandig",
+  "falmebestandig". The suffix "-motstandig" is a calque and less idiomatic.
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
