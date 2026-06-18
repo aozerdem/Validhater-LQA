@@ -38,12 +38,26 @@ SG and References/tmx_findings_*.md
 # ── Streamlit secrets (never commit) ────────────────
 .streamlit/secrets.toml
 
-# ── Client data — do not commit ─────────────────────
-# Amazon translation memory (confidential)
+# ── Client data & reference files — do not commit ───
+# Amazon translation memory
 SG and References/tmx/
+
+# Style guides and past feedback (content already baked into SYSTEM_PROMPT)
+SG and References/Style Guides/
+SG and References/Past Project Feedback - Customer Escalations/
 
 # Raw Galileo export files (Amazon product data)
 test samples/
 
 # Project emails / internal comms
 SG and References/Project Info/
+
+# Calibration & development artefacts
+repo/
+linguist feedback/
+notes/
+calibrate.py
+calibrate_pe.py
+analyze_results.py
+make_arbitration.py
+_build_pe_goldset.py

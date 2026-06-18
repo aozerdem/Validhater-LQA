@@ -587,7 +587,7 @@ def read_postedited_batch(filepaths: list[str]) -> list[dict]:
 BEDROCK_MODEL_ID = "us.anthropic.claude-opus-4-7"
 
 TERMBASE_PATH = (
-    Path(__file__).parent / "SG and References" / "Glossary" / "Amazon Global Term Base (1).md"
+    Path(__file__).parent / "SG and References" / "Glossary" / "TB_reference.md"
 )
 
 
