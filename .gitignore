@@ -35,6 +35,9 @@ output results/
 tmx_findings_*.md
 SG and References/tmx_findings_*.md
 
+# ── Streamlit secrets (never commit) ────────────────
+.streamlit/secrets.toml
+
 # ── Client data — do not commit ─────────────────────
 # Amazon translation memory (confidential)
 SG and References/tmx/

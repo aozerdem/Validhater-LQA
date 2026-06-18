@@ -456,17 +456,22 @@ none
 # CHECKPOINT 1: EXCEL READER
 # ─────────────────────────────────────────────
 
-def read_validated_segments(filepath: str, publish_filter: str = "Yes") -> list[dict]:
+def read_validated_segments(filepath, publish_filter: str = "Yes",
+                            source_label: str | None = None) -> list[dict]:
     """
     Read a Galileo HO export (.xlsx), return list of dicts for all segments where
     Publish == publish_filter.
       "Yes" (PU) → strings the validator marked publishable as-is.
       "No"  (PE) → strings the validator sent to post-editing.
+    filepath may be a path string or a BytesIO object (Streamlit uploads).
     """
     wb = openpyxl.load_workbook(filepath, data_only=True, read_only=True)
+    label = source_label if source_label is not None else (
+        filepath if isinstance(filepath, str) else "uploaded file"
+    )
 
     if "Segments" not in wb.sheetnames:
-        raise ValueError(f"No 'Segments' sheet found in {filepath}")
+        raise ValueError(f"No 'Segments' sheet found in {label}")
 
     ws = wb["Segments"]
     segments = []
@@ -485,7 +490,7 @@ def read_validated_segments(filepath: str, publish_filter: str = "Yes") -> list[
 
         segments.append({
             "row_index":      i + 2,          # 1-based, header = row 1
-            "source_file":    filepath,
+            "source_file":    label,
             "segment_id":     str(row[COL_SEGMENT_ID] or ""),
             "file_name":      str(row[COL_FILE_NAME] or ""),
             "validator_name": str(row[COL_VALIDATOR_NAME] or ""),
@@ -514,7 +519,7 @@ def read_batch(filepaths: list[str], publish_filter: str = "Yes") -> list[dict]:
     return all_segments
 
 
-def read_postedited_segments(filepath: str) -> list[dict]:
+def read_postedited_segments(filepath, source_label: str | None = None) -> list[dict]:
     """
     Read a post-editing handoff export (.xlsx) for PEQA — final QA of the
     linguist's post-edited output. Returns one dict per row that has a source
@@ -523,10 +528,14 @@ def read_postedited_segments(filepath: str) -> list[dict]:
     The string scored ("mt_target" key, for evaluator reuse) is the POST-EDITED
     target (col Q). The raw MT (OriginalTargetSegment) is kept as context only.
     There is no Publish column in this layout — every post-edited row is checked.
+    filepath may be a path string or a BytesIO object (Streamlit uploads).
     """
     wb = openpyxl.load_workbook(filepath, data_only=True, read_only=True)
+    label = source_label if source_label is not None else (
+        filepath if isinstance(filepath, str) else "uploaded file"
+    )
     if "Segments" not in wb.sheetnames:
-        raise ValueError(f"No 'Segments' sheet found in {filepath}")
+        raise ValueError(f"No 'Segments' sheet found in {label}")
 
     ws = wb["Segments"]
     segments = []
@@ -540,7 +549,7 @@ def read_postedited_segments(filepath: str) -> list[dict]:
 
         segments.append({
             "row_index":      i + 2,
-            "source_file":    filepath,
+            "source_file":    label,
             "segment_id":     str(row[COL_PE_SEGMENT_ID] or ""),
             "file_name":      str(row[COL_PE_FILE_NAME] or ""),
             "validator_name": str(row[COL_PE_RESOURCE] or ""),     # the post-editing linguist
@@ -775,8 +784,11 @@ def _evaluate_with_retry(client, source: str, mt_target: str, termbase: list | N
 
 
 def run_batch(segments: list[dict], client, termbase: list | None = None,
-              workers: int = 4, mode: str = "PU") -> list[dict]:
-    """Evaluate all segments in parallel. Returns segments with results filled in."""
+              workers: int = 4, mode: str = "PU",
+              progress_fn=None) -> list[dict]:
+    """Evaluate all segments in parallel. Returns segments with results filled in.
+    progress_fn(done, total, severity, score, category) is called after each segment.
+    """
     total = len(segments)
     lock = threading.Lock()
     done = [0]
@@ -798,6 +810,8 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
         with lock:
             done[0] += 1
             print(f"  [{done[0]:>3}/{total}] {seg['severity']:4} ({score_str:>3}) | {seg['error_category']}")
+            if progress_fn:
+                progress_fn(done[0], total, seg["severity"], seg["score"], seg.get("error_category", ""))
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = [executor.submit(evaluate_one, seg) for seg in segments]
@@ -906,7 +920,8 @@ def interpret_verdict(mode: str, severity: str, score=None) -> tuple[str, str]:
         }.get(severity, ("—", "FFFFFF"))
 
 
-def write_report(segments: list[dict], summary: dict, output_path: str, mode: str = "PU"):
+def write_report(segments: list[dict], summary: dict, output_path: str | None,
+                 mode: str = "PU", return_bytes: bool = False):
     """
     Write results to a separate Excel workbook with two sheets:
     - Segments: per-segment results
@@ -1058,6 +1073,12 @@ def write_report(segments: list[dict], summary: dict, output_path: str, mode: st
     ws_sum.row_dimensions[1].height = 42
     ws_sum.row_dimensions[3].height = 28
 
+    if return_bytes:
+        import io as _io
+        buf = _io.BytesIO()
+        wb.save(buf)
+        buf.seek(0)
+        return buf
     wb.save(output_path)
     print(f"\n  Report saved: {output_path}")
 
