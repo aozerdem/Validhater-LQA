@@ -23,9 +23,6 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
-import tkinter as tk
-from tkinter import filedialog
-
 import os
 import boto3
 from botocore.exceptions import ClientError
@@ -1090,6 +1087,7 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
 
 def ask_bearer_token() -> str:
     """Show a masked input dialog to collect the AWS Bedrock bearer token."""
+    import tkinter as tk
     result = {"token": ""}
 
     win = tk.Tk()
@@ -1116,6 +1114,8 @@ def ask_bearer_token() -> str:
 
 def pick_files_dialog() -> list[str]:
     """Open a file picker dialog and return selected .xlsx paths."""
+    import tkinter as tk
+    from tkinter import filedialog
     root = tk.Tk()
     root.withdraw()
     root.attributes("-topmost", True)
@@ -1129,6 +1129,7 @@ def pick_files_dialog() -> list[str]:
 
 def ask_check_mode() -> str:
     """Ask which check to run. Returns 'PU', 'PE', or 'PEQA'."""
+    import tkinter as tk
     result = {"mode": ""}
 
     win = tk.Tk()
@@ -1170,6 +1171,7 @@ def ask_check_mode() -> str:
 
 def ask_scope(total: int) -> int:
     """Ask full check (all rows) or spot check (random N). Returns number of rows to evaluate."""
+    import tkinter as tk
     result = {"n": total}
 
     win = tk.Tk()
