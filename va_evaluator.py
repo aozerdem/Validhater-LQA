@@ -550,24 +550,35 @@ def read_postedited_segments(filepath, source_label: str | None = None) -> list[
 
     for i, row in enumerate(ws.iter_rows(min_row=1, values_only=True)):
         if i == 0:
-            # Detect column indices from header names
+            # Detect column indices from header — accepts both hyphenated
+            # ("Post-EditingResource") and camelCase ("PostEditingResource") names
+            # to handle all known Galileo PEQA export formats.
             header = [str(c or "").strip() for c in row]
-            def _col(name, fallback):
-                try:
-                    return header.index(name)
-                except ValueError:
-                    return fallback
-            c_source     = _col("SourceSegment",           c_source)
-            c_mt         = _col("OriginalTargetSegment",   c_mt)
-            c_pe_target  = _col("PostEditingTargetSegment",c_pe_target)
-            c_resource   = _col("PostEditingResource",     c_resource)
-            c_galileo    = _col("PEGalileoID",             c_galileo)
-            c_ter        = _col("PostEditingTER",          c_ter)
-            c_file_name  = _col("FileName",                c_file_name)
-            c_segment_id = _col("SegmentID",               c_segment_id)
+            def _col(*names, fallback):
+                for name in names:
+                    try:
+                        return header.index(name)
+                    except ValueError:
+                        continue
+                return fallback
+            def _get(r, idx):
+                return r[idx] if idx is not None and idx < len(r) else None
+
+            c_source     = _col("SourceSegment",                                      fallback=COL_PE_SOURCE)
+            c_mt         = _col("OriginalTargetSegment",                              fallback=None)
+            c_pe_target  = _col("PostEditingTargetSegment", "Post-EditingTargetSegment", fallback=COL_PE_TARGET)
+            c_resource   = _col("PostEditingResource",      "Post-EditingResource",      fallback=COL_PE_RESOURCE)
+            c_galileo    = _col("PEGalileoID",              "GalileoID",                 fallback=COL_PE_GALILEO_ID)
+            c_ter        = _col("PostEditingTER",           "Post-EditingTER",           fallback=None)
+            c_file_name  = _col("FileName",                                           fallback=None)
+            c_segment_id = _col("SegmentID",                                          fallback=None)
             continue
-        source    = str(row[c_source] or "").strip()
-        pe_target = str(row[c_pe_target] or "").strip()
+
+        def _get(r, idx):  # noqa: F811
+            return r[idx] if idx is not None and idx < len(r) else None
+
+        source    = str(_get(row, c_source) or "").strip()
+        pe_target = str(_get(row, c_pe_target) or "").strip()
 
         if not source or source == "None" or not pe_target or pe_target == "None":
             continue
@@ -575,14 +586,14 @@ def read_postedited_segments(filepath, source_label: str | None = None) -> list[
         segments.append({
             "row_index":      i + 1,
             "source_file":    label,
-            "segment_id":     str(row[c_segment_id] or ""),
-            "file_name":      str(row[c_file_name] or ""),
-            "validator_name": str(row[c_resource] or ""),
-            "validator_id":   str(row[c_galileo] or ""),
+            "segment_id":     str(_get(row, c_segment_id) or ""),
+            "file_name":      str(_get(row, c_file_name) or ""),
+            "validator_name": str(_get(row, c_resource) or ""),
+            "validator_id":   str(_get(row, c_galileo) or ""),
             "source":         source,
             "mt_target":      pe_target,
-            "original_mt":    str(row[c_mt] or "").strip(),
-            "ter":            row[c_ter],
+            "original_mt":    str(_get(row, c_mt) or "").strip(),
+            "ter":            _get(row, c_ter),
             # Filled by the evaluator
             "score":          None,
             "severity":       None,
