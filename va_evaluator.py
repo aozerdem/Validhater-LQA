@@ -537,9 +537,27 @@ def read_postedited_segments(filepath, source_label: str | None = None) -> list[
     ws = wb["Segments"]
     segments = []
 
+    # Auto-detect column layout from header row (handles both simple handoff
+    # exports and full WOL TER batch exports which have different column counts)
+    header = [str(c or "").strip() for c in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+    def col(name, fallback):
+        try:
+            return header.index(name)
+        except ValueError:
+            return fallback
+
+    c_source     = col("SourceSegment",             COL_PE_SOURCE)
+    c_mt         = col("OriginalTargetSegment",      COL_PE_MT)
+    c_pe_target  = col("PostEditingTargetSegment",   COL_PE_TARGET)
+    c_resource   = col("PostEditingResource",        COL_PE_RESOURCE)
+    c_galileo    = col("PEGalileoID",                COL_PE_GALILEO_ID)
+    c_ter        = col("PostEditingTER",             COL_PE_TER)
+    c_file_name  = col("FileName",                   COL_PE_FILE_NAME)
+    c_segment_id = col("SegmentID",                  COL_PE_SEGMENT_ID)
+
     for i, row in enumerate(ws.iter_rows(min_row=2, values_only=True)):
-        source    = str(row[COL_PE_SOURCE] or "").strip()
-        pe_target = str(row[COL_PE_TARGET] or "").strip()
+        source    = str(row[c_source] or "").strip()
+        pe_target = str(row[c_pe_target] or "").strip()
 
         if not source or source == "None" or not pe_target or pe_target == "None":
             continue
@@ -547,14 +565,14 @@ def read_postedited_segments(filepath, source_label: str | None = None) -> list[
         segments.append({
             "row_index":      i + 2,
             "source_file":    label,
-            "segment_id":     str(row[COL_PE_SEGMENT_ID] or ""),
-            "file_name":      str(row[COL_PE_FILE_NAME] or ""),
-            "validator_name": str(row[COL_PE_RESOURCE] or ""),     # the post-editing linguist
-            "validator_id":   str(row[COL_PE_GALILEO_ID] or ""),
+            "segment_id":     str(row[c_segment_id] or ""),
+            "file_name":      str(row[c_file_name] or ""),
+            "validator_name": str(row[c_resource] or ""),
+            "validator_id":   str(row[c_galileo] or ""),
             "source":         source,
-            "mt_target":      pe_target,                            # SCORED string = post-edited output
-            "original_mt":    str(row[COL_PE_MT] or "").strip(),    # raw MT, context only
-            "ter":            row[COL_PE_TER],
+            "mt_target":      pe_target,
+            "original_mt":    str(row[c_mt] or "").strip(),
+            "ter":            row[c_ter],
             # Filled by the evaluator
             "score":          None,
             "severity":       None,
