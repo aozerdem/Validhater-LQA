@@ -20,6 +20,7 @@ desktop.ini
 # Root-level outputs
 va_report_*.xlsx
 va_report_*.md
+~$*
 analysis_*.xlsx
 PE_va_report_*.md
 PU_va_report_*.md
@@ -46,8 +47,9 @@ SG and References/tmx/
 SG and References/Style Guides/
 SG and References/Past Project Feedback - Customer Escalations/
 
-# Raw Galileo export files (Amazon product data)
+# Raw Galileo export files and test inputs (Amazon product data)
 test samples/
+/*.md
 
 # Project emails / internal comms
 SG and References/Project Info/
