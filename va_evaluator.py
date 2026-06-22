@@ -650,7 +650,14 @@ def evaluate_segment(client, source: str, mt_target: str, termbase: list | None 
 
     usage   = response.get("usage", {})
     metrics = response.get("metrics", {})
-    raw = response["output"]["message"]["content"][0]["text"].strip()
+    content = response.get("output", {}).get("message", {}).get("content", [])
+    if not content:
+        return {
+            "score": -1, "severity": "FAIL",
+            "error_category": "empty-response",
+            "reasoning": "Bedrock returned an empty response for this segment.",
+        }
+    raw = content[0]["text"].strip()
 
     # Strip accidental markdown fences
     raw = re.sub(r"^```json\s*", "", raw)
@@ -726,7 +733,11 @@ def evaluate_segment_pe(client, source: str, mt_target: str, termbase: list | No
 
     usage   = response.get("usage", {})
     metrics = response.get("metrics", {})
-    raw = response["output"]["message"]["content"][0]["text"].strip()
+    content = response.get("output", {}).get("message", {}).get("content", [])
+    if not content:
+        return {"send_to_pe": "No", "improvement_type": "empty-response",
+                "reasoning": "Bedrock returned an empty response for this segment."}
+    raw = content[0]["text"].strip()
 
     # Strip accidental markdown fences, skip any preamble before the JSON
     raw = re.sub(r"^```json\s*", "", raw)
