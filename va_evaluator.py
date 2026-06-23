@@ -149,6 +149,11 @@ SPELLING
 TYPOGRAPHY
 - Bullet points: Use lowercase unless the bullet is a complete sentence (then capitalise).
 - Dashes: En-dash (–) for number ranges. No spaces around dash for time/distance/relationship opposites.
+- Separator dashes: When a hyphen " - " (space–hyphen–space) is used as a TEXT SEPARATOR between phrases
+  in product copy (e.g. "Color - Black", "Material - These sets are..."), it MUST be an en-dash " – " in NB-NO.
+  Using a plain hyphen as a phrase separator is a HARD ERROR — Language Leads reject it consistently.
+  Examples: "Farge - Svart" → FAIL; "Farge – Svart" → correct.
+  Note: hyphens within compound words (e.g. "T-skjorte", "USB-kabel") are correct and must NOT be changed.
 - Ellipsis: Space before and after (… hos Amazon).
 - Quotation marks: Use double guillemots « ».
 - Slashes: No space between slash and adjacent characters, UNLESS one or both sides contain multiple words.
@@ -167,9 +172,13 @@ LOCALE CONVENTIONS
   %, mm, cm, m, km, kg, g, ml, l, W, V, A, mAh, kB, MB, GB, °C, and others.
   Examples: "100%" → "100 %", "14mm" → "14 mm", "5kg" → "5 kg".
   Same rule applies to en-dash in numerical ranges: "5-10" → "5–10" is a HARD ERROR.
-  Convert imperial to metric where applicable (except TVs, hard drives, laptops, bicycle
-  tyres → keep imperial). NOTE: inches are acceptable in some Norwegian product contexts —
-  if the LL context allows inch usage, do not auto-fail; flag as WARN with reasoning.
+- Unit symbol capitalisation: Unit symbols must be lowercase — "cm" not "CM", "mm" not "MM",
+  "ml" not "ML". All-caps unit symbols are a typography error.
+- Imperial measurements: When the source contains imperial units (inches, oz, fl oz, lbs, ft, yards),
+  the target must include a metric equivalent or convert to metric. Keeping imperial only (e.g.
+  "16 x 16 inches" with no cm equivalent) is at minimum a WARN. Exceptions: TV screen sizes,
+  hard drive storage, laptop screen sizes, bicycle tyre sizes — keep imperial for these categories.
+  For other product types, flag as WARN with reasoning if no metric is provided.
 - Clothing/shoe sizes: Convert UK to EU using manufacturer chart or standard sizing chart.
 
 VOICE AND TONE
@@ -243,6 +252,21 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "dry clean" (care label) → "rensing". "Tørrens" is incorrect in most care-label contexts.
 - "stain resistant" / "fade resistant" → use "-bestandig" suffix compounds: "flekkbestandig",
   "falmebestandig". The suffix "-motstandig" is a calque and less idiomatic.
+
+- "upper material" / "upper" (footwear context) → "overlær". "Øvre materiale" is a calque — FAIL.
+- "washing instructions" → "vaskeanvisninger". "Vaskeinstruksjoner" is a calque — FAIL.
+- "applicable places" / "applicable for" → "egnede steder" / "egnet for". "Gjeldende steder" is a calque — FAIL.
+- "case" (phone/device case) → "deksel". "Etui" is wrong for phone cases — it refers to glasses cases,
+  document holders, or card cases. "Etui" for a phone case is a FAIL.
+- "shatterproof" → "splintresistent" or "støtsikker". "Knusesikkert" is not a recognised Norwegian word — FAIL.
+- "like-new condition" → "som ny". "I ny tilstand" is unidiomatic — WARN.
+- "wide applications" / "wide range of uses" → "mange bruksområder". "Brede applikasjoner" is a calque — FAIL.
+- "plain" (colour/pattern) → "ensfarget". "Vanlig" and "Solid" (untranslated) are incorrect — FAIL.
+- "hypoallergenic" → "allergivennlig" is CORRECT in NB-NO. Do NOT flag "allergivennlig" as wrong —
+  "hypoallergenisk" is NOT used in Norwegian product copy. This is a confirmed LL override.
+- "warp knitting" → no established single-word compound in NB-NO; "varpstrikking" is not a word.
+  Prefer "varpstikning" or retain the phrase "varpstrikket" only if widely attested. Flag calques.
+- "dorm" / "dormitory" → "sovesal" is acceptable (LL-confirmed). Do NOT flag it as mistranslation.
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
