@@ -97,9 +97,11 @@ This is a Full MTPE project producing parallel translation data for Amazon Machi
 
 ACCURACY
 - Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices.
-- Omission: Nothing present in the source may be omitted in the target — including repetitive content, warranty/delivery info, marketing text. EXCEPTION: Possessive pronouns ('our', 'your', 'its') may be dropped when the meaning remains unambiguous from context — this is standard NB-NO usage and is NOT an omission error (e.g. 'Our Hard Case' → 'Hardt deksel' is acceptable).
+- Omission: Nothing present in the source may be omitted in the target — including repetitive content, warranty/delivery info, marketing text. EXCEPTION: Possessive pronouns ('our', 'your', 'its') may be dropped when the meaning remains unambiguous from context — this is standard NB-NO usage and is NOT an omission error (e.g. 'Our Hard Case' → 'Hardt deksel' is acceptable). EXCEPTION: Clearly redundant repetitions in the source (e.g. "on any occasion and on any occasion") and garbled MT noun-stack artifacts (e.g. "Sports wind casual shoes" condensed to "Sports- og fritidssko") may be condensed — this is NOT an omission error. EXCEPTION: Consecutive enumerated years may be consolidated into a range (e.g. "2014 2015 2016 2017" → "2014–2017") — this is NOT an omission error.
+  NOTE: Omission of qualifying adjectives in technical compound terms IS an error (e.g. "inner tube" → "slange" instead of "innerslange" — the qualifier "inner" carries meaning and must not be dropped).
 - Addition: No text may appear in the target that is not in the source.
-- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context). Do not flag these as untranslated content.
+- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context), "man cave", "styling", "hoodie", "sneakers", "cover-up" / "cover-ups" (swimwear/beachwear context). Do not flag these as untranslated content.
+  EXCEPTION TO THE EXCEPTION: Standalone English attribute or category values in spec fields must always be translated regardless of loanword status — e.g. "Casual" → "Fritid", "Sports" → "Sport", "Plus Size" → "Store størrelser". Leaving these untranslated in a spec value position is an accuracy:untranslated error.
 Bracketed section labels [Like This] must NOT be translated.
 If the source contains a structural label such as [Design Description],
 [Material Description], [Product Performance], [Accessory Construction], or any
@@ -131,12 +133,16 @@ STYLE
 - Sentence splitting: Long EN run-on marketing sentences are routinely split into two or more shorter NB sentences. Do NOT flag sentence splitting as an addition or structural error.
 - Marketing condensation: Promotional superlatives and filler may be condensed or softened rather than translated word-for-word. Do NOT flag reasonable condensation as an omission unless meaningful content is lost.
 - Care labels: Care-label instructions are rendered as noun phrases ("tørketrommel uten varme", "rensing") rather than imperative verbs. This is correct NB-NO convention — do not penalise.
+- Broken source reinterpretation: When the English source is clearly ungrammatical, machine-generated, or contextually wrong (e.g. "wooden sofa" for a product that is clearly a chair), accept the translator's sensible contextual reinterpretation in NB-NO. Do not flag as mistranslation.
+- Spec label capitalisation: In product spec/attribute lists, the label word(s) before a colon must be capitalised (e.g. "Farge: Svart", not "farge: svart"). Lowercase labels in spec lists are a fluency:typography error.
 
 === RULES: NB-NO LANGUAGE APPENDIX ===
 
 GRAMMAR (Norwegian-specific)
 - Prepositions: "hos Amazon" (not "ved Amazon"), "Sammenlignet med" (not "til"), "Klikk på" (not "i"), "Plasser markøren over" (not "oppå").
 - Acronym plurals: Remove 's', add '-ene': PC-ene, TV-ene (not PCene, TVene).
+- Plural adjective agreement — collective referents: Do not flag plural adjective forms when the adjectives describe the overall product or material collectively rather than agreeing with a single explicit antecedent (e.g. "Laget av BPA-fri plast, giftfrie, luktfrie, holdbare" — the plural forms are correct for a collective material description).
+- Grammatical gender: Flag mismatched grammatical gender between pronouns, articles, or adjectives and their referents — including on loanwords (e.g. wrong article on "metalltoken"; "Det blir mer fleksibelt" where the referent requires a different gender).
 
 SPELLING
 - Capitalisation: Follow Norwegian rules — sentence case, not title case.
@@ -158,6 +164,8 @@ TYPOGRAPHY
 - Quotation marks: Use double guillemots « ».
 - Slashes: No space between slash and adjacent characters, UNLESS one or both sides contain multiple words.
 - Headings/titles: No full stop at end.
+- Numeric lists: Commas in numeric lists must be followed by a space in NB-NO (e.g. "39, 40, 41, 42" not "39,40,41,42"). Do NOT flag an added space after commas in numeric lists as an addition.
+- Letter-number spacing: A space is required between alphabetic characters and adjacent numerals in product names and titles (e.g. "iPad 2017" not "iPad2017"). Flag missing spaces as fluency:typography.
 
 LOCALE CONVENTIONS
 - Decimal separator: Comma (50,5 — not 50.5). Exception: version numbers keep period (ver. 4.2).
@@ -196,6 +204,7 @@ These are recurring error types that have caused Amazon quality escalations in t
 5. Measurement and number format errors — wrong decimal separator, missing unit space, failure to convert clothing sizes.
 6. Punctuation errors — trailing spaces before periods, missing dashes, wrong quotation marks.
 7. Unintelligible MT output validated without correction — the validator should have sent this to PE.
+8. Invented/non-attested Norwegian compounds — calques that look plausible but do not exist in Norwegian (e.g. "melkete-butikker", "oppsprett", "vindusskjold", "Veggrulleplakat", "støtfangerdeksel"). Flag as fluency:spelling or style:unidiomatic. Verify compounds exist before accepting them.
 
 === NB-NO KNOWN MT ERROR LEXICON (from LL-rated calibration + PE diff data) ===
 
@@ -245,8 +254,8 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "Return Policy" → "Returvilkår". "Returpolicy" is an anglicism and incorrect.
 - "Cross body bag" / "crossbody bag" → "skulderveske". Do not translate literally.
 - "Throw Pillow Cover" → "putetrekk". "Throw" is dropped — this is correct and not an omission.
-- "charm" (jewellery context) → kept as "charm" in Norwegian (confirmed Amazon loanword).
-  Do not flag as untranslated. "Anheng" would be a mistranslation here.
+- "charm" (jewellery context) → both "charm" (Amazon loanword) and "anheng" are valid (LL-confirmed).
+  Do not flag either as untranslated or as mistranslation in jewellery context.
 - "silver tone" → "sølvfarget". "Sølvtone" is a calque and incorrect.
 - "spot clean" → "flekkrens" or "punktrens". "Spotrengjøring" is a calque error.
 - "dry clean" (care label) → "rensing". "Tørrens" is incorrect in most care-label contexts.
@@ -267,6 +276,15 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "warp knitting" → no established single-word compound in NB-NO; "varpstrikking" is not a word.
   Prefer "varpstikning" or retain the phrase "varpstrikket" only if widely attested. Flag calques.
 - "dorm" / "dormitory" → "sovesal" is acceptable (LL-confirmed). Do NOT flag it as mistranslation.
+- "background wall" / "accent wall" → "bakgrunnsvegg" is correct. Do not flag as non-standard.
+- "plastic" / "PC plastic" / "PC" (as material name in product specs) → "polykarbonat". "PC-plast" or bare "PC" used as a material label is a calque — flag as style:unidiomatic.
+- "thong" (lingerie/swimwear) → "g-streng". "Tanga" is incorrect for NB-NO — FAIL.
+- "plus size" → "store størrelser". "Plusstørrelse" or "pluss størrelse" are calques — FAIL.
+- "barbell" (fitness/jewellery piercing context) → "vektstang". "Stav" and other loose translations are incorrect — WARN.
+- "ribbon knitting" / "woven binding" → "ribbebinding" is not a recognised compound; flag as invented.
+- "care label" / "care tag" → "pleieetikett" is a calque; correct term is "vaskelapp" or "innholdsmerking".
+- "lovable" / "adorable" → "elskbart" is a calque and sounds unnatural; prefer "søt", "yndig", or "sjarmerende" depending on context.
+- "filling" (product material/content) → "fyll" (not "fylling" — that means dental filling or food stuffing in unrelated contexts).
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
@@ -313,7 +331,7 @@ Apply ALL the rules above. Be precise and linguistically rigorous.
 
 For very short or trivial segments (single words, brand names, model numbers, ASIN codes, pure symbol strings), assign score 99 and category "no-error" unless there is a clear mistake.
 
-For segments that are partially or fully nonsensical in the source: do not penalise the target if it appropriately mirrors the (nonsensical) source.
+For segments that are partially or fully nonsensical in the source: do not penalise the target if it appropriately mirrors the (nonsensical) source, and also accept sensible contextual reinterpretation (see "Broken source reinterpretation" under STYLE).
 
 === OUTPUT FORMAT ===
 
