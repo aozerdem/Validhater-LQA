@@ -96,12 +96,13 @@ This is a Full MTPE project producing parallel translation data for Amazon Machi
 === RULES: TDT CORE STYLE GUIDE ===
 
 ACCURACY
-- Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices.
+- Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices. Also flag loss of source semantic head: when a source head noun such as "Material", "Colour", "Size", or "Type" is silently replaced in the target (e.g. "metal Material" → "Metalltype" — loses "material" and substitutes "type"; correct: "Metallmateriale").
 - Omission: Nothing present in the source may be omitted in the target — including repetitive content, warranty/delivery info, marketing text. EXCEPTION: Possessive pronouns ('our', 'your', 'its') may be dropped when the meaning remains unambiguous from context — this is standard NB-NO usage and is NOT an omission error (e.g. 'Our Hard Case' → 'Hardt deksel' is acceptable). EXCEPTION: Clearly redundant repetitions in the source (e.g. "on any occasion and on any occasion") and garbled MT noun-stack artifacts (e.g. "Sports wind casual shoes" condensed to "Sports- og fritidssko") may be condensed — this is NOT an omission error. EXCEPTION: Consecutive enumerated years may be consolidated into a range (e.g. "2014 2015 2016 2017" → "2014–2017") — this is NOT an omission error.
   NOTE: Omission of qualifying adjectives in technical compound terms IS an error (e.g. "inner tube" → "slange" instead of "innerslange" — the qualifier "inner" carries meaning and must not be dropped).
 - Addition: No text may appear in the target that is not in the source.
 - Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context), "man cave", "styling", "hoodie", "sneakers", "cover-up" / "cover-ups" (swimwear/beachwear context). Do not flag these as untranslated content.
   EXCEPTION TO THE EXCEPTION: Standalone English attribute or category values in spec fields must always be translated regardless of loanword status — e.g. "Casual" → "Fritid", "Sports" → "Sport", "Plus Size" → "Store størrelser". Leaving these untranslated in a spec value position is an accuracy:untranslated error.
+  LOANWORD POLICY: Established English adjectives in lifestyle/marketing/home-textile copy (e.g. "fluffy") may be retained when no clear idiomatic NB-NO equivalent is standard in that product category — do not flag these. English technical nouns used in compound formations (e.g. "print-teknologi") must be translated — flag these as accuracy:untranslated.
 Bracketed section labels [Like This] must NOT be translated.
 If the source contains a structural label such as [Design Description],
 [Material Description], [Product Performance], [Accessory Construction], or any
@@ -135,6 +136,7 @@ STYLE
 - Care labels: Care-label instructions are rendered as noun phrases ("tørketrommel uten varme", "rensing") rather than imperative verbs. This is correct NB-NO convention — do not penalise.
 - Broken source reinterpretation: When the English source is clearly ungrammatical, machine-generated, or contextually wrong (e.g. "wooden sofa" for a product that is clearly a chair), accept the translator's sensible contextual reinterpretation in NB-NO. Do not flag as mistranslation.
 - Spec label capitalisation: In product spec/attribute lists, the label word(s) before a colon must be capitalised (e.g. "Farge: Svart", not "farge: svart"). Lowercase labels in spec lists are a fluency:typography error.
+- Localised franchise and title names: Do not flag film, book, game, or franchise titles as mistranslations when the target uses the established Norwegian localised title (e.g. "How to Train Your Dragon 2" → "Dragetreneren 2"). Where the official localised title cannot be verified, note "verify against official title" rather than flagging as an error.
 
 === RULES: NB-NO LANGUAGE APPENDIX ===
 
@@ -166,12 +168,13 @@ TYPOGRAPHY
 - Headings/titles: No full stop at end.
 - Numeric lists: Commas in numeric lists must be followed by a space in NB-NO (e.g. "39, 40, 41, 42" not "39,40,41,42"). Do NOT flag an added space after commas in numeric lists as an addition.
 - Letter-number spacing: A space is required between alphabetic characters and adjacent numerals in product names and titles (e.g. "iPad 2017" not "iPad2017"). Flag missing spaces as fluency:typography.
+- Suspended compounds with shared units: When a series of numeric values shares a single unit at the end (e.g. "40, 45 eller 50 cm"), do NOT insert a dangling hyphen after each number. "40,6-, 45,7- eller 50,8 cm" is wrong — the hyphens imply the unit is being compounded each time, which it is not. Correct form: "40,6, 45,7 eller 50,8 cm". Flag dangling hyphens after numerals in this construction as fluency:typography.
 
 LOCALE CONVENTIONS
 - Decimal separator: Comma (50,5 — not 50.5). Exception: version numbers keep period (ver. 4.2).
 - Thousands separator: Non-breaking space (1 526 — not 1,526). Exception: model/part numbers unchanged.
 - Currency: Keep source currency but format per Norwegian rules (25 dollar, not 25 US $; USD 150, not 150 USD).
-- Date: DD.MM.YYYY format (14.07.2013).
+- Date: DD.MM.YYYY format (14.07.2013). When a numeric date string is ambiguous (e.g. "10-05-1958" — could be May 10 or October 5), do NOT assert a specific interpretation. Flag as "ambiguous date format — verify intended order" rather than calling it an error.
 - Time: 24-hour format (20:30, not 8:30 PM).
 - Temperature: Always Celsius (°C). Space between number and symbol (27 °C).
 - Measurements: Space between number and symbol (100 m, 50 %, 100 % bomull). A missing space
@@ -187,7 +190,7 @@ LOCALE CONVENTIONS
   "16 x 16 inches" with no cm equivalent) is at minimum a WARN. Exceptions: TV screen sizes,
   hard drive storage, laptop screen sizes, bicycle tyre sizes — keep imperial for these categories.
   For other product types, flag as WARN with reasoning if no metric is provided.
-- Clothing/shoe sizes: Convert UK to EU using manufacturer chart or standard sizing chart.
+- Clothing/shoe sizes: Convert UK to EU using manufacturer chart or standard sizing chart. Flag converted values that are numerically implausible against standard tables (e.g. US shoe size 8.5 M → EU 42, not EU 39). A wrong conversion is an accuracy:mistranslation error.
 
 VOICE AND TONE
 - Formal register. Active voice preferred.
@@ -265,8 +268,9 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "upper material" / "upper" (footwear context) → "overlær". "Øvre materiale" is a calque — FAIL.
 - "washing instructions" → "vaskeanvisninger". "Vaskeinstruksjoner" is a calque — FAIL.
 - "applicable places" / "applicable for" → "egnede steder" / "egnet for". "Gjeldende steder" is a calque — FAIL.
-- "case" (phone/device case) → "deksel". "Etui" is wrong for phone cases — it refers to glasses cases,
-  document holders, or card cases. "Etui" for a phone case is a FAIL.
+- "case" (phone/device case) → depends on case type:
+  Hard/snap/bumper/clear phone case → "deksel". Using "etui" here is a FAIL.
+  Wallet/folio/sleeve/pouch/book-style case → "etui" is correct and natural NB-NO. Do NOT flag "etui" for these product types.
 - "shatterproof" → "splintresistent" or "støtsikker". "Knusesikkert" is not a recognised Norwegian word — FAIL.
 - "like-new condition" → "som ny". "I ny tilstand" is unidiomatic — WARN.
 - "wide applications" / "wide range of uses" → "mange bruksområder". "Brede applikasjoner" is a calque — FAIL.
@@ -285,6 +289,12 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "care label" / "care tag" → "pleieetikett" is a calque; correct term is "vaskelapp" or "innholdsmerking".
 - "lovable" / "adorable" → "elskbart" is a calque and sounds unnatural; prefer "søt", "yndig", or "sjarmerende" depending on context.
 - "filling" (product material/content) → "fyll" (not "fylling" — that means dental filling or food stuffing in unrelated contexts).
+- "No" (boolean/yes-no attribute value) → "Nei". "Ingen" means "none/zero quantity" and is wrong here — FAIL.
+- "lovers" (gift/relationship context) → "kjærester" (romantic partners) or "kjære" (loved ones). "Familie" is a mistranslation — FAIL. Do not assert a single replacement; note which fits the product context.
+- colour term "rose" → must be written "rosé" (with acute accent) in NB-NO colour lists. Unaccented "rose" means the flower — wrong in a colour context. Flag as fluency:spelling.
+- "left-handed" (cutting tools, scissors, end mills) → "venstrehendt". "Venstregående" is incorrect in this context — WARN.
+- "print" in technical compound nouns → translate as "trykk-" (printing/press technology) or "utskrift-" (computer output) depending on context. Retained English "print-" in compounds (e.g. "print-teknologi") is accuracy:untranslated — FAIL.
+- "spacer rings" (jewellery/beading context) → "avstandsringer". "Mellomringer" and "mellomledd-ringer" are non-preferred — WARN.
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
@@ -293,6 +303,7 @@ UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
   only when it reads as an unnatural calque; do NOT flag when it fits the register.
 - Over-long compound chains (e.g. "motorsykkelbremsekoblingsspaker") → flag as
   style:unidiomatic; natural Norwegian splits these with spaces or hyphens.
+- Stacked attributive compounds: Two or more hyphenated/coordinated modifiers preceding a head noun are often unidiomatic when a postmodifier "med [feature]" construction would be more natural. Example: "Blad- og blomster-polyesterslips" → prefer "Polyesterslips med blad- og blomstermønster". Flag as style:unidiomatic.
 - "På salg" for limited-time sale → anglicism. Natural NB-NO: "På tilbud" / "Tilbud".
 
 This lexicon grows with each production cycle. Apply the same scrutiny to comparable
