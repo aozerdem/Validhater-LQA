@@ -233,9 +233,10 @@ def _run(uploaded_files, mode: str, spot_n):
     progress_bar.progress(1.0, text="Done")
     status_text.empty()
 
-    summary     = aggregate_by_validator(segments)
-    timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_bytes = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
+    summary      = aggregate_by_validator(segments)
+    timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
+    report_buf   = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
+    report_bytes = report_buf.read()   # BytesIO → bytes; required for base64 encoding
 
     st.session_state["eval_results"] = {
         "segments":     segments,
