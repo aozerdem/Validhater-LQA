@@ -11,6 +11,7 @@ from datetime import datetime
 
 import boto3
 import streamlit as st
+from botocore.config import Config
 from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
 
 from va_evaluator import (
@@ -69,6 +70,7 @@ def main():
         st.write("")
         st.write(f"Logged in as **{st.session_state.current_user}**")
         if st.button("Log out"):
+            st.session_state.pop("eval_results", None)
             st.session_state.logged_in = False
             st.rerun()
 
@@ -106,14 +108,32 @@ def main():
     )
     uploaded = st.file_uploader(upload_label, type="xlsx", accept_multiple_files=True)
 
-    if not uploaded:
+    if uploaded:
+        st.write(f"**{len(uploaded)} file(s) ready**")
+        if st.button("Run evaluation", type="primary", use_container_width=True):
+            _run(uploaded, mode, spot_n)
+    elif "eval_results" not in st.session_state:
         st.info("Upload one or more .xlsx files to begin.")
-        return
 
-    st.write(f"**{len(uploaded)} file(s) ready**")
-
-    if st.button("Run evaluation", type="primary", use_container_width=True):
-        _run(uploaded, mode, spot_n)
+    # ── Results — always render from session state ─────────────────────────
+    if "eval_results" in st.session_state:
+        r = st.session_state["eval_results"]
+        n_errors = sum(1 for s in r["segments"] if s.get("error_category") == "api-error")
+        if n_errors:
+            st.warning(
+                f"{n_errors} segment(s) could not be evaluated after retries and are marked "
+                f"as api-error in the report. Re-running the batch will resolve this."
+            )
+        st.success(
+            f"Report ready — {len(r['segments'])} segments · "
+            f"{r['mode']} · {r['timestamp']}"
+        )
+        if st.button("New evaluation (clear results)"):
+            st.session_state.pop("eval_results", None)
+            st.rerun()
+        st.divider()
+        _show_results(r["segments"], r["summary"], r["mode"],
+                      r["report_bytes"], r["timestamp"])
 
 
 # ─────────────────────────────────────────────
@@ -151,7 +171,11 @@ def _run(uploaded_files, mode: str, spot_n):
 
     try:
         os.environ["AWS_BEARER_TOKEN_BEDROCK"] = st.secrets["aws"]["bearer_token"]
-        client = boto3.client(service_name="bedrock-runtime", region_name="us-east-1")
+        client = boto3.client(
+            service_name="bedrock-runtime",
+            region_name="us-east-1",
+            config=Config(read_timeout=300, connect_timeout=30),
+        )
     except Exception as exc:
         st.error(f"AWS connection failed: {exc}")
         return
@@ -181,17 +205,25 @@ def _run(uploaded_files, mode: str, spot_n):
     progress_bar.progress(1.0, text="Done")
     status_text.empty()
 
-    summary = aggregate_by_validator(segments)
-    st.success(f"Done — {len(segments)} segments evaluated.")
-    st.divider()
-    _show_results(segments, summary, mode)
+    summary     = aggregate_by_validator(segments)
+    timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
+    report_bytes = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
+
+    st.session_state["eval_results"] = {
+        "segments":     segments,
+        "summary":      summary,
+        "mode":         mode,
+        "timestamp":    timestamp,
+        "report_bytes": report_bytes,
+    }
+    st.rerun()
 
 
 # ─────────────────────────────────────────────
 # RESULTS
 # ─────────────────────────────────────────────
 
-def _show_results(segments: list, summary: dict, mode: str):
+def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes, timestamp: str):
     st.subheader("Resource Performance")
 
     perf_rows = []
@@ -254,11 +286,9 @@ def _show_results(segments: list, summary: dict, mode: str):
     st.dataframe(rows, use_container_width=True, hide_index=True)
 
     st.divider()
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    buf = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
     st.download_button(
-        "Download Excel report",
-        data=buf,
+        "⬇ Download Excel report",
+        data=report_bytes,
         file_name=f"va_report_{mode}_{timestamp}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         use_container_width=True,

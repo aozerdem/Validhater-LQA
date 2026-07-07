@@ -25,7 +25,7 @@ from datetime import datetime
 from pathlib import Path
 import os
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ReadTimeoutError, ConnectTimeoutError, EndpointConnectionError
 import openpyxl
 
 # ─────────────────────────────────────────────
@@ -96,14 +96,28 @@ This is a Full MTPE project producing parallel translation data for Amazon Machi
 === RULES: TDT CORE STYLE GUIDE ===
 
 ACCURACY
-- Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices. Also flag loss of source semantic head: when a source head noun such as "Material", "Colour", "Size", or "Type" is silently replaced in the target (e.g. "metal Material" → "Metalltype" — loses "material" and substitutes "type"; correct: "Metallmateriale").
-- Omission: Nothing present in the source may be omitted in the target — including repetitive content, warranty/delivery info, marketing text. EXCEPTION: Possessive pronouns ('our', 'your', 'its') may be dropped when the meaning remains unambiguous from context — this is standard NB-NO usage and is NOT an omission error (e.g. 'Our Hard Case' → 'Hardt deksel' is acceptable). EXCEPTION: Clearly redundant repetitions in the source (e.g. "on any occasion and on any occasion") and garbled MT noun-stack artifacts (e.g. "Sports wind casual shoes" condensed to "Sports- og fritidssko") may be condensed — this is NOT an omission error. EXCEPTION: Consecutive enumerated years may be consolidated into a range (e.g. "2014 2015 2016 2017" → "2014–2017") — this is NOT an omission error.
-  NOTE: Omission of qualifying adjectives in technical compound terms IS an error (e.g. "inner tube" → "slange" instead of "innerslange" — the qualifier "inner" carries meaning and must not be dropped).
+- Mistranslation: Target must accurately represent source meaning. No false friends, no semantic drift, no wrong context choices. Also flag:
+  - Loss of source semantic head: when a source head noun such as "Material", "Colour", "Size", or "Type" is silently replaced (e.g. "metal Material" → "Metalltype" — loses "material"; correct: "Metallmateriale").
+  - Semantic drift on concrete nouns: when a specific source noun is replaced by a generic or abstract term (e.g. "watch size" → "størrelsesstandard" instead of "klokkestørrelse").
+  - Scope narrowing: when a broad spatial or conceptual source term is translated by a narrower Norwegian term (e.g. "living space" → "stue" (living room only) instead of "oppholdsrom"/"boareal"; "home" → "hus" instead of "hjem"). Flag as accuracy:mistranslation.
+  - Brand/product name alteration: flag any translation, partial translation, or "correction" of brand names or product proper nouns. They must be preserved verbatim (e.g. brand "Mis Tee V-Us" altered to "My Tee V-Us" is a FAIL). Exception: established locale-specific brand forms.
+  TERMINOLOGY THRESHOLD — apply this test before flagging any term as a mistranslation or terminology error:
+  (a) Inflectional/agreement variant of the same lemma (e.g. singular vs plural, definite vs indefinite, adjective agreement forms) → do NOT flag. Meaning is preserved.
+  (b) Accepted synonym in NB-NO (both terms widely understood) → do NOT flag.
+  (c) Different lemma with materially different meaning (e.g. "Dobbeltseng" for "Twin") → flag as accuracy:mistranslation.
+- Omission: Gate all omission flags on (i) semantic loss OR (ii) resulting ungrammaticality in the target. Purely structural omissions that cause neither are NOT errors. Specific exemptions:
+  - Possessive pronouns ('our', 'your', 'its') may be dropped when meaning is unambiguous from context (e.g. 'Our Hard Case' → 'Hardt deksel' — acceptable).
+  - Function words (prepositions, articles, repeated conjunctions) may be omitted when the NB-NO sentence remains grammatically correct and semantically equivalent (e.g. "NOT for regular S3" → "IKKE vanlig S3" — the second "for" is not required in Norwegian).
+  - Clearly redundant source repetitions and garbled MT noun-stack artifacts may be condensed.
+  - Consecutive enumerated years may be collapsed into a range (e.g. "2014 2015 2016 2017" → "2014–2017").
+  - Source-side typographic noise (duplicated symbols, stray asterisks, doubled spaces) may be normalised without penalty (e.g. "20 * * 40 cm" → "20 * 40 cm").
+  NOTE: Omission of qualifying adjectives in technical compound terms IS an error (e.g. "inner tube" → "slange" instead of "innerslange").
 - Addition: No text may appear in the target that is not in the source.
 - Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context), "man cave", "styling", "hoodie", "sneakers", "cover-up" / "cover-ups" (swimwear/beachwear context), "romper" (children's/fashion clothing), "wrestling" (pro wrestling/WWE context — flag only when context clearly means the Olympic sport "bryting"), "te-lengde" / "telengde" (fashion: "tea length" — both spellings accepted). Do not flag these as untranslated content.
   Also flag: "DIY" left untranslated → correct NB-NO is "gjør-det-selv".
   EXCEPTION TO THE EXCEPTION: Standalone English attribute or category values in spec fields must always be translated regardless of loanword status — e.g. "Casual" → "Fritid", "Sports" → "Sport", "Plus Size" → "Store størrelser". Leaving these untranslated in a spec value position is an accuracy:untranslated error.
   LOANWORD POLICY: Established English adjectives in lifestyle/marketing/home-textile copy (e.g. "fluffy") may be retained when no clear idiomatic NB-NO equivalent is standard in that product category — do not flag these. English technical nouns used in compound formations (e.g. "print-teknologi") must be translated — flag these as accuracy:untranslated.
+  English compound modifiers that have a clear, standard NB-NO equivalent must be translated even when used as design descriptors (e.g. "Slim-fit" → "tettsittende", "heavy-duty" → "kraftig"). Flag retained English compound modifiers as accuracy:untranslated when a natural Norwegian form exists.
 Bracketed section labels [Like This] ARE translatable and MUST be translated into NB-NO.
 If the source contains a structural content label such as [Design Description],
 [Material Description], [Product Performance], [Accessory Construction], [Features],
@@ -136,8 +150,14 @@ STYLE
 - Atmospheric adjectives: Accept moderate softening of atmospheric/weather adjectives in marketing copy (e.g. "wintery" → "kjølig"). Do not flag unless meaning is materially lost.
 - Noun repetition in noun-stack titles: Allow repetition of a core product noun when each instance carries a distinct modifier (e.g. "putetrekk … rektangulære putetrekk"). Only flag truly redundant adjacent duplication (e.g. "sofa, sofa").
 - Slogans/franchise titles: When a product title contains an embedded slogan, motto, or citation, it must be enclosed in guillemets « » in NB-NO (e.g. «Fire and Blood» Targaryen). See also: Localised franchise and title names rule above.
-- Care labels: Care-label instructions are rendered as noun phrases ("tørketrommel uten varme", "rensing") rather than imperative verbs. This is correct NB-NO convention — do not penalise.
-- Broken source reinterpretation: When the English source is clearly ungrammatical, machine-generated, or contextually wrong (e.g. "wooden sofa" for a product that is clearly a chair), accept the translator's sensible contextual reinterpretation in NB-NO. Do not flag as mistranslation.
+- Care labels: Care-label instructions are rendered as noun phrases ("tørketrommel uten varme", "rensing") rather than bare imperative verbs. This is correct NB-NO convention — do not penalise. For prohibition instructions, the established NB-NO forms use modal passives, not bare imperatives:
+  - "Do not bleach" → "Ikke bruk blekemiddel" (not "Ikke blek")
+  - "Do not iron" → "Skal ikke strykes" (not "Ikke stryk")
+  - "Do not tumble dry" → "Skal ikke tørketromles"
+  - "Do not wash" → "Skal ikke vaskes"
+  Flag literal bare imperatives in care instructions as style:unidiomatic.
+- Broken source reinterpretation: When the English source is clearly ungrammatical, machine-generated, or contextually wrong (e.g. "wooden sofa" for a product that is clearly a chair), accept the translator's sensible contextual reinterpretation in NB-NO. Do not flag as mistranslation. This also applies to defective source punctuation: when a missing period produces a run-on sentence (e.g. "The case is made Of Gel Cutouts give easy access…"), the translator is expected to reconstruct proper sentence boundaries in the target — do NOT flag this as unfaithful or as an addition.
+- Non-English source: If the source segment is not English (e.g. German "EINFACHE PFLEGE:", French, Spanish), flag as out-of-scope. The segment should not have been translated into NB-NO — flag as accuracy:mistranslation with a note that the source language is not EN-GB.
 - Spec label capitalisation: In product spec/attribute lists, the label word(s) before a colon must be capitalised (e.g. "Farge: Svart", not "farge: svart"). Lowercase labels in spec lists are a fluency:typography error.
 - Localised franchise and title names: Do not flag film, book, game, or franchise titles as mistranslations when the target uses the established Norwegian localised title (e.g. "How to Train Your Dragon 2" → "Dragetreneren 2"). Where the official localised title cannot be verified, note "verify against official title" rather than flagging as an error.
 
@@ -147,6 +167,7 @@ GRAMMAR (Norwegian-specific)
 - Prepositions: "hos Amazon" (not "ved Amazon"), "Sammenlignet med" (not "til"), "Klikk på" (not "i"), "Plasser markøren over" (not "oppå").
 - Acronym plurals: Remove 's', add '-ene': PC-ene, TV-ene (not PCene, TVene).
 - Plural adjective agreement — collective referents: Do not flag plural adjective forms when the adjectives describe the overall product or material collectively rather than agreeing with a single explicit antecedent (e.g. "Laget av BPA-fri plast, giftfrie, luktfrie, holdbare" — the plural forms are correct for a collective material description).
+- Adjective agreement with neuter (et-) nouns: Adjectives modifying a neuter singular indefinite noun must take the -t neuter form. Flag missing -t inflection (e.g. "myk" → "mykt" before a neuter noun like "design"). Note: adjectives ending in -ig (e.g. "behagelig") and those already ending in a double consonant (e.g. "lett") are invariant in neuter — do not add -t to these. Only flag where the -t form is genuinely required by the adjective's inflection paradigm.
 - Grammatical gender: Flag mismatched grammatical gender between pronouns, articles, or adjectives and their referents — including on loanwords (e.g. wrong article on "metalltoken"; "Det blir mer fleksibelt" where the referent requires a different gender).
 - "er forbudt å [verb]": This passive-like construction is acceptable in NB-NO (e.g. "er forbudt å videreselge"). Do NOT flag it as ungrammatical.
 - Gender-neutral "kjæreste": "kjæreste" is gender-neutral in NB-NO and correctly covers both "boyfriend" and "girlfriend". Do not flag it as an omission when the source lists both.
@@ -160,6 +181,7 @@ SPELLING
   Only the descriptive NB-NO words around it must follow sentence case.
 - Wi-Fi (trademark) = capital W and F. wifi (generic) = all lowercase.
 - VAT = mva. (with period). AWS stays AWS. PPE stays PPE.
+- Standalone attribute values: When a short standalone attribute value (material, colour, finish) is capitalised in the source as an Amazon spec field (e.g. "Brass", "Silver", "Black"), the NB-NO rendering must also carry an initial capital (e.g. "Messing", "Sølv", "Svart"). Lowercasing these is a fluency:spelling error. This applies to isolated attribute strings only — not to material words embedded in running prose.
 
 TYPOGRAPHY
 - Bullet points: Use lowercase unless the bullet is a complete sentence (then capitalise).
@@ -197,6 +219,7 @@ LOCALE CONVENTIONS
   Same rule applies to en-dash in numerical ranges: "5-10" → "5–10" is a HARD ERROR.
 - Unit symbol capitalisation: Unit symbols must be lowercase — "cm" not "CM", "mm" not "MM",
   "ml" not "ML". All-caps unit symbols are a typography error.
+- Unit name localisation: English unit names must be rendered in Norwegian and must NOT carry English plural "-s". Correct NB-NO forms: "meter" (not "meters"), "tommer" (not "inches"), "fot" (not "feet"), "pund" (not "pounds"), "unse" (not "oz" or "ounces"). Flag English unit names left in English form as accuracy:untranslated.
 - Imperial measurements: When the source contains imperial units (inches, oz, fl oz, lbs, ft, yards),
   the target must include a metric equivalent or convert to metric. Keeping imperial only (e.g.
   "16 x 16 inches" with no cm equivalent) is at minimum a WARN. Exceptions: TV screen sizes,
@@ -278,7 +301,7 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
   "falmebestandig". The suffix "-motstandig" is a calque and less idiomatic.
 
 - "upper material" / "upper" (footwear context) → "overlær". "Øvre materiale" is a calque — FAIL.
-- "washing instructions" → "vaskeanvisninger". "Vaskeinstruksjoner" is a calque — FAIL.
+- "washing instructions" → both "vaskeanvisninger" and "vaskeinstruksjoner" are acceptable (LL-confirmed). Do not flag either form.
 - "applicable places / areas / ages / for" → "gjeldende" is highly context-dependent in NB-NO — do NOT flag it. Skip evaluation on this term. Preferred renderings when clearly wrong: "Bruksområder" (areas of use), "Egnet for" (suitable for), "Anbefalt alder" (recommended age), but correctness depends on context.
 - "case" (phone/device case) → depends on case type:
   Hard/snap/bumper/clear phone case → "deksel". Using "etui" here is a FAIL.
@@ -309,6 +332,8 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "spacer rings" (jewellery/beading context) → "avstandsringer". "Mellomringer" and "mellomledd-ringer" are non-preferred — WARN.
 - "rhinestone" → "strass". "Rhinstein" / "rhinsteiner" is a calque — FAIL.
 - "Target gender" (spec label) → "Målgruppe". "Målkjønn" is a literal calque — FAIL.
+- "Twin Size" (bedding/mattress) → "Enkeltseng" (single bed). "Dobbeltseng" is WRONG — it corresponds to English "Double"/"Full", not "Twin" — FAIL.
+- "Skullies" / "Beanies" (headwear) → "lue" (beanie) or "tettsittende lue" (skully). "Skallue"/"skalluer" is uncommon and non-idiomatic — WARN.
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
@@ -884,14 +909,22 @@ def evaluate_segment_pe(client, source: str, mt_target: str, termbase: list | No
 # CHECKPOINT 3: BATCH RUNNER + AGGREGATION
 # ─────────────────────────────────────────────
 
+_TRANSIENT_CLIENT_CODES = {"ThrottlingException", "ServiceUnavailableException", "InternalServerException"}
+
 def _evaluate_with_retry(client, source: str, mt_target: str, termbase: list | None,
                          max_retries: int = 3) -> dict:
-    """evaluate_segment with exponential-backoff retry on Bedrock throttling."""
+    """evaluate_segment with exponential-backoff retry on throttling and transient errors."""
     for attempt in range(max_retries):
         try:
             return evaluate_segment(client, source, mt_target, termbase)
         except ClientError as exc:
-            if exc.response["Error"]["Code"] == "ThrottlingException" and attempt < max_retries - 1:
+            code = exc.response["Error"]["Code"]
+            if code in _TRANSIENT_CLIENT_CODES and attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+            else:
+                raise
+        except (ReadTimeoutError, ConnectTimeoutError, EndpointConnectionError):
+            if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)
             else:
                 raise
@@ -908,18 +941,25 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
     done = [0]
 
     def evaluate_one(seg: dict) -> None:
-        if mode == "PE":
-            result = evaluate_segment_pe(client, seg["source"], seg["mt_target"], termbase)
-            seg["score"]          = None
-            seg["severity"]       = "FAIL" if result.get("send_to_pe") == "Yes" else "OK"
-            seg["error_category"] = result.get("improvement_type", "")
-            seg["reasoning"]      = result.get("reasoning", "")
-        else:
-            result = _evaluate_with_retry(client, seg["source"], seg["mt_target"], termbase)
-            seg["score"]          = result["score"]
-            seg["severity"]       = result["severity"]
-            seg["error_category"] = result.get("error_category", "")
-            seg["reasoning"]      = result.get("reasoning", "")
+        try:
+            if mode == "PE":
+                result = evaluate_segment_pe(client, seg["source"], seg["mt_target"], termbase)
+                seg["score"]          = None
+                seg["severity"]       = "FAIL" if result.get("send_to_pe") == "Yes" else "OK"
+                seg["error_category"] = result.get("improvement_type", "")
+                seg["reasoning"]      = result.get("reasoning", "")
+            else:
+                result = _evaluate_with_retry(client, seg["source"], seg["mt_target"], termbase)
+                seg["score"]          = result["score"]
+                seg["severity"]       = result["severity"]
+                seg["error_category"] = result.get("error_category", "")
+                seg["reasoning"]      = result.get("reasoning", "")
+        except Exception as exc:
+            seg["score"]          = -1
+            seg["severity"]       = "FAIL"
+            seg["error_category"] = "api-error"
+            seg["reasoning"]      = f"Segment skipped after retries: {exc}"
+
         score_str = str(seg["score"]) if seg["score"] is not None else "---"
         with lock:
             done[0] += 1
@@ -930,7 +970,7 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = [executor.submit(evaluate_one, seg) for seg in segments]
         for future in as_completed(futures):
-            future.result()  # re-raises any worker exception
+            future.result()
 
     return segments
 

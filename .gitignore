@@ -39,6 +39,8 @@ SG and References/tmx_findings_*.md
 # LL feedback analysis outputs
 feedback_findings_*.md
 feedback_analyzer.py
+agreement_stats.py
+agreement_stats_*.md
 
 # ── Streamlit secrets (never commit) ────────────────
 .streamlit/secrets.toml
