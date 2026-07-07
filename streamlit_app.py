@@ -3,11 +3,14 @@ streamlit_app.py
 TDT LQA Evaluator — web UI for Language Leads
 """
 
+import base64
 import io
 import os
 import random
 import threading
 from datetime import datetime
+
+import streamlit.components.v1 as components
 
 import boto3
 import streamlit as st
@@ -24,6 +27,28 @@ from va_evaluator import (
 )
 
 st.set_page_config(page_title="TDT LQA Evaluator", layout="wide")
+
+
+def _auto_download(report_bytes: bytes, mode: str, timestamp: str) -> None:
+    """Inject a JS snippet that immediately downloads the report to the user's Downloads folder."""
+    b64      = base64.b64encode(report_bytes).decode()
+    filename = f"va_report_{mode}_{timestamp}.xlsx"
+    mime     = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    components.html(
+        f"""
+        <script>
+            (function() {{
+                const a = document.createElement('a');
+                a.href = 'data:{mime};base64,{b64}';
+                a.download = '{filename}';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }})();
+        </script>
+        """,
+        height=0,
+    )
 
 
 # ─────────────────────────────────────────────
@@ -118,6 +143,9 @@ def main():
     # ── Results — always render from session state ─────────────────────────
     if "eval_results" in st.session_state:
         r = st.session_state["eval_results"]
+        if r.get("fresh"):
+            r["fresh"] = False
+            _auto_download(r["report_bytes"], r["mode"], r["timestamp"])
         n_errors = sum(1 for s in r["segments"] if s.get("error_category") == "api-error")
         if n_errors:
             st.warning(
@@ -215,6 +243,7 @@ def _run(uploaded_files, mode: str, spot_n):
         "mode":         mode,
         "timestamp":    timestamp,
         "report_bytes": report_bytes,
+        "fresh":        True,
     }
     st.rerun()
 
