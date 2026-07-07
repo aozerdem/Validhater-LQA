@@ -30,24 +30,39 @@ st.set_page_config(page_title="TDT LQA Evaluator", layout="wide")
 
 
 def _auto_download(report_bytes: bytes, mode: str, timestamp: str) -> None:
-    """Inject a JS snippet that immediately downloads the report to the user's Downloads folder."""
+    """Inject a JS snippet that immediately downloads the report via a Blob URL."""
     b64      = base64.b64encode(report_bytes).decode()
     filename = f"va_report_{mode}_{timestamp}.xlsx"
     mime     = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     components.html(
         f"""
         <script>
-            (function() {{
-                const a = document.createElement('a');
-                a.href = 'data:{mime};base64,{b64}';
+        (function() {{
+            try {{
+                var b64 = '{b64}';
+                var binary = atob(b64);
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) {{
+                    bytes[i] = binary.charCodeAt(i);
+                }}
+                var blob = new Blob([bytes], {{type: '{mime}'}});
+                var url  = URL.createObjectURL(blob);
+                var a    = document.createElement('a');
+                a.href     = url;
                 a.download = '{filename}';
                 document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
-            }})();
+                setTimeout(function() {{
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }}, 200);
+            }} catch(e) {{
+                console.error('Auto-download failed:', e);
+            }}
+        }})();
         </script>
         """,
-        height=0,
+        height=1,
     )
 
 
@@ -153,8 +168,18 @@ def main():
                 f"as api-error in the report. Re-running the batch will resolve this."
             )
         st.success(
-            f"Report ready — {len(r['segments'])} segments · "
+            f"Evaluation complete — {len(r['segments'])} segments · "
             f"{r['mode']} · {r['timestamp']}"
+        )
+        # Download button at top — visible immediately, before filters and table
+        st.download_button(
+            "⬇ Download Excel report",
+            data=r["report_bytes"],
+            file_name=f"va_report_{r['mode']}_{r['timestamp']}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True,
+            type="primary",
+            key="dl_top",
         )
         if st.button("New evaluation (clear results)"):
             st.session_state.pop("eval_results", None)
@@ -322,7 +347,7 @@ def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes,
         file_name=f"va_report_{mode}_{timestamp}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         use_container_width=True,
-        type="primary",
+        key="dl_bottom",
     )
 
 
