@@ -111,10 +111,21 @@ ACCURACY
   - Clearly redundant source repetitions and garbled MT noun-stack artifacts may be condensed.
   - Consecutive enumerated years may be collapsed into a range (e.g. "2014 2015 2016 2017" → "2014–2017").
   - Source-side typographic noise (duplicated symbols, stray asterisks, doubled spaces) may be normalised without penalty (e.g. "20 * * 40 cm" → "20 * 40 cm").
+  - Contextually redundant generic head-nouns in technical compounds may be dropped when the resulting NB-NO term is unambiguous (e.g. "drill lubricant retention → smøremiddelretensjonen" — the generic "retention" is absorbed into the compound).
+  - "double-needle stitching → doble stikninger" is the standard NB-NO term; do not flag omission of "needle".
+  - Loss of comparative degree ("more/mer") in marketing or benefit copy is acceptable (e.g. "is more secure → er trygg").
+  - Corrupted characters and mojibake (£», Â, and similar encoding artefacts) carry no semantic content — do not flag their omission.
+  RESOLUTION — omission vs understatement: Omission is acceptable when the dropped element is redundant, unidiomatic, or a generic modifier. Flag when the dropped or weakened element carries semantic strength (e.g. "essential" → "godt tilbehør" understates; prefer "viktig"/"nødvendig") or domain-specific meaning (e.g. "outdoor engineering → utendørs bruk" drops "engineering"; prefer "utendørs prosjekter").
   NOTE: Omission of qualifying adjectives in technical compound terms IS an error (e.g. "inner tube" → "slange" instead of "innerslange").
-- Addition: No text may appear in the target that is not in the source.
-- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context), "man cave", "styling", "hoodie", "sneakers", "cover-up" / "cover-ups" (swimwear/beachwear context), "romper" (children's/fashion clothing), "wrestling" (pro wrestling/WWE context — flag only when context clearly means the Olympic sport "bryting"), "te-lengde" / "telengde" (fashion: "tea length" — both spellings accepted). Do not flag these as untranslated content.
+- Addition: No text may appear in the target that is not in the source. Specific exemptions:
+  - Stacked English synonym nouns reformulated as a NB-NO comma list (e.g. "Back Case Cover Shell Skin → bakdeksel, deksel, skall og dekorfolie") is a valid reformulation — not an addition.
+  - Adding "tommer" after a screen-size number (e.g. "4.7 → 4,7 tommer") is standard NB-NO clarification — do not flag.
+  - Added contextual product-type specificity that matches the actual product (e.g. "puppets → fingerdukker") is acceptable.
+  - Plural "størrelser" for a "size:" label followed by a list of values (e.g. "size: 35, 36, 37 → størrelser: 35, 36, 37") is acceptable.
+- Untranslated: No English words left untranslated unless (a) they are also common in Norwegian, (b) they are a brand/model/slogan/quote, (c) the SG explicitly allows it, or (d) they are Amazon-confirmed loanwords retained by convention: "tank top", "babyshower", "snapback" (and hyphenated compounds e.g. "snapback-caps"), "charm" (jewellery context), "man cave", "styling", "hoodie", "sneakers" (both "sneakers" and "joggesko" are valid), "cover-up" / "cover-ups" (swimwear/beachwear context), "romper" (children's/fashion clothing), "wrestling" (pro wrestling/WWE context — flag only when context clearly means the Olympic sport "bryting"), "te-lengde" / "telengde" (fashion: "tea length" — both spellings accepted), "twill" (fabric/textile context — do not require "kypert"), "fresh" (accepted NB-NO loanword — do not flag). Do not flag these as untranslated content.
+  Standard clothing size codes (S, M, L, XL, XXL, and similar) are acceptable untranslated.
   Also flag: "DIY" left untranslated → correct NB-NO is "gjør-det-selv".
+  Descriptive English clothing category terms must be translated: "tee" and "top" (when used as descriptive category nouns, not as size codes) must have NB-NO equivalents — flag as accuracy:untranslated.
   EXCEPTION TO THE EXCEPTION: Standalone English attribute or category values in spec fields must always be translated regardless of loanword status — e.g. "Casual" → "Fritid", "Sports" → "Sport", "Plus Size" → "Store størrelser". Leaving these untranslated in a spec value position is an accuracy:untranslated error.
   LOANWORD POLICY: Established English adjectives in lifestyle/marketing/home-textile copy (e.g. "fluffy") may be retained when no clear idiomatic NB-NO equivalent is standard in that product category — do not flag these. English technical nouns used in compound formations (e.g. "print-teknologi") must be translated — flag these as accuracy:untranslated.
   English compound modifiers that have a clear, standard NB-NO equivalent must be translated even when used as design descriptors (e.g. "Slim-fit" → "tettsittende", "heavy-duty" → "kraftig"). Flag retained English compound modifiers as accuracy:untranslated when a natural Norwegian form exists.
@@ -143,7 +154,7 @@ STYLE
 - Word order: Follow source element order as closely as Norwegian allows. Title element order must be preserved.
 - Voice/Tone: Comparatively formal Norwegian. Active voice preferred.
 - Slogans/Quotes: Leave in source language, enclose in quotation marks.
-- Wrong language in source: If source contains a non-English word that is clearly a slogan/model name, leave it. Otherwise omit the nonsensical part and translate the rest.
+- Wrong language in source: If source contains a non-English word that is clearly a slogan/model name, leave it. Otherwise omit the nonsensical part and translate the rest. When the source contains non-English SEO keywords embedded within otherwise English copy (e.g. Spanish "vestidos"), the translator should omit them rather than transfer or translate them. Flag transferred foreign-language SEO keywords as style:unidiomatic.
 - Title restructuring: Long English noun-stack product titles are routinely restructured into readable Norwegian phrases using em-dash ( – ) separators. Do NOT flag this as an omission or word-order deviation.
 - Sentence splitting: Long EN run-on marketing sentences are routinely split into two or more shorter NB sentences. Do NOT flag sentence splitting as an addition or structural error.
 - Marketing condensation: Promotional superlatives and filler may be condensed or softened rather than translated word-for-word. Do NOT flag reasonable condensation as an omission unless meaningful content is lost. Specifically: dropped marketing superlatives ("best", "finest", "ultimate") are NOT omissions when the NB-NO rendering remains accurate. Near-synonymous or overlapping English qualifiers (e.g. "ultimate maximum", "foundational and stabilizing") may be conflated into a single natural NB-NO term without penalty.
@@ -157,6 +168,10 @@ STYLE
   - "Do not wash" → "Skal ikke vaskes"
   Flag literal bare imperatives in care instructions as style:unidiomatic.
 - Broken source reinterpretation: When the English source is clearly ungrammatical, machine-generated, or contextually wrong (e.g. "wooden sofa" for a product that is clearly a chair), accept the translator's sensible contextual reinterpretation in NB-NO. Do not flag as mistranslation. This also applies to defective source punctuation: when a missing period produces a run-on sentence (e.g. "The case is made Of Gel Cutouts give easy access…"), the translator is expected to reconstruct proper sentence boundaries in the target — do NOT flag this as unfaithful or as an addition.
+- Source-quality artefacts: Apparent source typos or MT artefacts (e.g. "Cow Muscle", "sunscreen" in a hazard list, encoding artefacts in the source) — categorise as source-quality issue, not translator mistranslation. Do not penalise the translator's contextual reinterpretation of such artefacts.
+- Sentence conflation: Allow moderate merging of adjacent marketing statements when strict separation produces repetitive or awkward NB-NO. Only flag when conflation changes factual meaning.
+- Short ambiguous spec labels: When a spec label lacks disambiguating context (e.g. "Drive Style:" could be "Sportype:" or "Kjørestil:"), downgrade to WARN with a context-dependency note rather than FAIL.
+- Context-dependent term checks: Before flagging "sele" as a mistranslation of "collar", check whether the product is a set containing both a collar and a harness — if so, "sele" may be intentional. Generalisation of product-part terms (e.g. "rice nail → nagle/nagledesign" in eyewear) is acceptable when a literal NB-NO equivalent reads unnaturally, provided product context is preserved.
 - Non-English source: If the source segment is not English (e.g. German "EINFACHE PFLEGE:", French, Spanish), flag as out-of-scope. The segment should not have been translated into NB-NO — flag as accuracy:mistranslation with a note that the source language is not EN-GB.
 - Spec label capitalisation: In product spec/attribute lists, the label word(s) before a colon must be capitalised (e.g. "Farge: Svart", not "farge: svart"). Lowercase labels in spec lists are a fluency:typography error.
 - Localised franchise and title names: Do not flag film, book, game, or franchise titles as mistranslations when the target uses the established Norwegian localised title (e.g. "How to Train Your Dragon 2" → "Dragetreneren 2"). Where the official localised title cannot be verified, note "verify against official title" rather than flagging as an error.
@@ -171,6 +186,8 @@ GRAMMAR (Norwegian-specific)
 - Grammatical gender: Flag mismatched grammatical gender between pronouns, articles, or adjectives and their referents — including on loanwords (e.g. wrong article on "metalltoken"; "Det blir mer fleksibelt" where the referent requires a different gender).
 - "er forbudt å [verb]": This passive-like construction is acceptable in NB-NO (e.g. "er forbudt å videreselge"). Do NOT flag it as ungrammatical.
 - Gender-neutral "kjæreste": "kjæreste" is gender-neutral in NB-NO and correctly covers both "boyfriend" and "girlfriend". Do not flag it as an omission when the source lists both.
+- "design" gender agreement: Both "søt design" (masculine agreement) and "søtt design" (neuter agreement) are accepted in NB-NO product copy. Do not flag either form.
+- "baby → barne-": In clothing and shoe product titles, "baby" translated as "barne-" (e.g. "baby shoes → barnesko") is acceptable. Do not flag this as a mistranslation.
 
 SPELLING
 - Capitalisation: Follow Norwegian rules — sentence case, not title case. Flag Title Case
@@ -188,8 +205,8 @@ TYPOGRAPHY
 - Dashes: En-dash (–) for number ranges. No spaces around dash for time/distance/relationship opposites.
 - Separator dashes: When a hyphen " - " (space–hyphen–space) is used as a TEXT SEPARATOR between phrases
   in product copy (e.g. "Color - Black", "Material - These sets are..."), it MUST be an en-dash " – " in NB-NO.
-  Using a plain hyphen as a phrase separator is a HARD ERROR — Language Leads reject it consistently.
-  Examples: "Farge - Svart" → FAIL; "Farge – Svart" → correct.
+  Flag at WARN severity only; do not escalate to FAIL unless the hyphen clearly impairs readability.
+  Examples: "Farge - Svart" → WARN; "Farge – Svart" → correct.
   Note: hyphens within compound words (e.g. "T-skjorte", "USB-kabel") are correct and must NOT be changed.
 - Ellipsis: Space before and after (… hos Amazon).
 - Quotation marks: Use double guillemots « ».
@@ -198,7 +215,8 @@ TYPOGRAPHY
 - Numeric lists: Commas in numeric lists must be followed by a space in NB-NO (e.g. "39, 40, 41, 42" not "39,40,41,42"). Do NOT flag an added space after commas in numeric lists as an addition.
 - Letter-number spacing: A space is required between alphabetic characters and adjacent numerals in product names and titles (e.g. "iPad 2017" not "iPad2017"). Flag missing spaces as fluency:typography.
 - Multi-hyphen runs: Flag triple or quadruple hyphens ("---", "----") in NB-NO targets — replace with en dash "–".
-- Space after colon: NB-NO requires a space after a colon in spec/attribute labels, regardless of source formatting (e.g. "Type: Kakeverktøy" not "Type:Kakeverktøy"). Flag missing post-colon space as fluency:typography.
+- Space after colon: NB-NO requires a space after a colon in spec/attribute labels, regardless of source formatting (e.g. "Type: Kakeverktøy" not "Type:Kakeverktøy"). Flag missing post-colon space as fluency:typography. EXCEPTION: when a colon appears at the very end of a segment or truncated segment (e.g. "(Farge:" where the value follows in the next segment), do NOT flag missing post-colon space.
+- Space before semicolon: Do not flag a space before ";" in NB-NO attribute/spec lists (e.g. "Bomull; Kjønn:").
 - Material abbreviation formatting: When a material name is followed by its abbreviation, the abbreviation must appear in parentheses: "polykarbonat (PC)", not "polykarbonat PC". Applies to: PC, PVC, ABS, PU, TPU, and similar.
 - Multiplication sign: Lowercase "x" used as a multiplication/quantity sign (e.g. "1 x blyantveske") is acceptable in NB-NO product specs. Do NOT flag it.
 - Emoji spacing: Do not flag missing whitespace between an emoji and adjacent punctuation or brackets (e.g. "🔥【STOFF OG LATEX】").
@@ -259,7 +277,7 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
   Preferred: "baseballcaps" / "baseballcapsen"
 - "hat" → wrong type is an error: "lue" = knitted/beanie; "hatt" = brimmed/general.
   Check context and product type.
-- "great" / "flott" in product quality context → "flott" is weak. Preferred: "god"
+- "great" (product quality claim) → "flott" is weak; preferred "god". EXCEPTION: in gift/marketing contexts where "great" modifies a gift noun (e.g. "A great gift → En flott gave"), "flott" is natural and acceptable — do not flag.
 - "Suit for adult(s)" → "Drakt for voksne" is WRONG (drakt = costume/outfit).
   Correct: "Passer til voksne" or "Egnet for voksne"
 - "designed" → "designet" can be a calque in marketing copy, where "laget" / "lages"
@@ -334,6 +352,13 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
 - "Target gender" (spec label) → "Målgruppe". "Målkjønn" is a literal calque — FAIL.
 - "Twin Size" (bedding/mattress) → "Enkeltseng" (single bed). "Dobbeltseng" is WRONG — it corresponds to English "Double"/"Full", not "Twin" — FAIL.
 - "Skullies" / "Beanies" (headwear) → "lue" (beanie) or "tettsittende lue" (skully). "Skallue"/"skalluer" is uncommon and non-idiomatic — WARN.
+- "stretchy" → "strekkbart" is a calque; prefer "elastisk" in product descriptions — WARN.
+- "essential" (product accessory context) → "godt tilbehør" / "fint tilbehør" understates; prefer "viktig tilbehør" or "nødvendig tilbehør" — WARN.
+- "full color" (print/decoration context) → "klare farger" is a mistranslation; correct term is "fullfargetrykk" — FAIL.
+- "patch pockets" → "lappede lommer" is a mistranslation; correct NB-NO is "påsydde lommer" (distinct from "innstikklommer") — FAIL.
+- "outdoor engineering" → "utendørs bruk" drops the "engineering" element; preferred rendering is "utendørs prosjekter" — WARN.
+- "Tykkelse: middels tykkelse": repetition of "tykkelse" is standard in NB-NO fabric specs — do not flag.
+- "gult gull" alongside "gullbelagt": not a contradiction or implication of solid gold — do not flag.
 
 UNIDIOMATIC PATTERNS (MT produces technically valid but unnatural Norwegian):
 - "vennligst" → CONTEXT-DEPENDENT, not a blanket error (LL-confirmed). Often omitted in
@@ -1087,27 +1112,31 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
     ws_seg = wb.active
     ws_seg.title = "Segments"
 
+    _LL_FEEDBACK_HEADERS = ["Agree with AI?", "If Not, Why?", "Feedback to Linguist"]
+
     if mode == "PEQA":
         seg_headers = [
             "SourceFile", "SegmentID", "Linguist", "GalileoID",
             "Source", "Post-edited target",
             "QA score", "Severity", "ErrorCategory", "Reasoning", "QA verdict",
-        ]
+        ] + _LL_FEEDBACK_HEADERS
     else:
         seg_headers = [
             "SourceFile", "SegmentID", "ValidatorName", "ValidatorID",
             "Source", "MT_Target",
             "Score", "Severity", "ErrorCategory", "Reasoning", "ValidatorVerdict",
-        ]
+        ] + _LL_FEEDBACK_HEADERS
     ws_seg.append(seg_headers)
 
     # Header styling
     from openpyxl.styles import Font, PatternFill, Alignment
     header_font = Font(bold=True, color="FFFFFF")
     header_fill = PatternFill("solid", fgColor="2E4057")
-    for cell in ws_seg[1]:
+    # Distinct teal fill for the LL input columns (L, M, N)
+    ll_header_fill = PatternFill("solid", fgColor="1D7874")
+    for col_idx, cell in enumerate(ws_seg[1], 1):
         cell.font = header_font
-        cell.fill = header_fill
+        cell.fill = ll_header_fill if col_idx >= 12 else header_fill
         cell.alignment = Alignment(horizontal="center")
 
     severity_colors = {
@@ -1130,6 +1159,7 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
             seg["error_category"],
             seg["reasoning"],
             verdict_text,
+            "", "", "",  # L, M, N — LL fills in: Agree with AI? / If Not, Why? / Feedback to Linguist
         ]
         ws_seg.append(row)
         # Colour the Severity cell
@@ -1140,7 +1170,7 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
         verdict_cell.fill = PatternFill("solid", fgColor=verdict_color)
 
     # Column widths
-    col_widths = [30, 45, 22, 12, 60, 60, 8, 10, 35, 80, 36]
+    col_widths = [30, 45, 22, 12, 60, 60, 8, 10, 35, 80, 36, 16, 45, 45]
     for i, w in enumerate(col_widths, 1):
         ws_seg.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
 
