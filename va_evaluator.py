@@ -205,8 +205,8 @@ TYPOGRAPHY
 - Dashes: En-dash (–) for number ranges. No spaces around dash for time/distance/relationship opposites.
 - Separator dashes: When a hyphen " - " (space–hyphen–space) is used as a TEXT SEPARATOR between phrases
   in product copy (e.g. "Color - Black", "Material - These sets are..."), it MUST be an en-dash " – " in NB-NO.
-  Flag at WARN severity only; do not escalate to FAIL unless the hyphen clearly impairs readability.
-  Examples: "Farge - Svart" → WARN; "Farge – Svart" → correct.
+  Using a plain hyphen as a phrase separator is a HARD ERROR — Language Leads reject it consistently — FAIL.
+  Examples: "Farge - Svart" → FAIL; "Farge – Svart" → correct.
   Note: hyphens within compound words (e.g. "T-skjorte", "USB-kabel") are correct and must NOT be changed.
 - Ellipsis: Space before and after (… hos Amazon).
 - Quotation marks: Use double guillemots « ».
