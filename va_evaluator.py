@@ -1162,17 +1162,37 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
             "", "", "",  # L, M, N — LL fills in: Agree with AI? / If Not, Why? / Feedback to Linguist
         ]
         ws_seg.append(row)
+        cur = ws_seg.max_row
+        # Wrap text + vertical alignment for Source (E=5), Target (F=6), Reasoning (J=10)
+        for col in (5, 6, 10):
+            ws_seg.cell(row=cur, column=col).alignment = Alignment(wrap_text=True, vertical="top")
+        ws_seg.row_dimensions[cur].height = 60
         # Colour the Severity cell
-        sev_cell = ws_seg.cell(row=ws_seg.max_row, column=8)
+        sev_cell = ws_seg.cell(row=cur, column=8)
         sev_cell.fill = PatternFill("solid", fgColor=severity_colors.get(seg["severity"], "FFFFFF"))
         # Colour the ValidatorVerdict cell (green = right call, red = wrong call)
-        verdict_cell = ws_seg.cell(row=ws_seg.max_row, column=11)
+        verdict_cell = ws_seg.cell(row=cur, column=11)
         verdict_cell.fill = PatternFill("solid", fgColor=verdict_color)
+        # Pre-apply filter: hide clean rows so only flagged/borderline are visible by default
+        if mode == "PEQA" and verdict_text == "Passes QA (>= 98)":
+            ws_seg.row_dimensions[cur].hidden = True
 
     # Column widths
     col_widths = [30, 45, 22, 12, 60, 60, 8, 10, 35, 80, 36, 16, 45, 45]
     for i, w in enumerate(col_widths, 1):
         ws_seg.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
+
+    # AutoFilter on header row + pre-set filter to show only flagged/borderline rows
+    last_col = openpyxl.utils.get_column_letter(len(seg_headers))
+    ws_seg.auto_filter.ref = f"A1:{last_col}1"
+    if mode == "PEQA":
+        try:
+            from openpyxl.worksheet.filters import FilterColumn, Filters  # type: ignore[import]
+            fc = FilterColumn(colId=10)  # K is 11th column; colId is 0-indexed from A
+            fc.filters = Filters(filter=["Below 95 — needs rework", "Borderline — quick check recommended"])
+            ws_seg.auto_filter.filterColumn.append(fc)
+        except ImportError:
+            pass  # hidden rows already handle filtering; dropdown arrows still appear
 
     # ── Sheet 2: Resource Performance (LL-facing insight, mode-aware) ──
     ws_sum = wb.create_sheet("Resource_Performance")
