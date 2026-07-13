@@ -3,14 +3,11 @@ streamlit_app.py
 TDT LQA Evaluator — web UI for Language Leads
 """
 
-import base64
 import io
 import os
 import random
 import threading
 from datetime import datetime
-
-import streamlit.components.v1 as components
 
 import boto3
 import streamlit as st
@@ -29,43 +26,6 @@ from va_evaluator import (
 st.set_page_config(page_title="TDT LQA Evaluator", layout="wide")
 
 
-def _auto_download(report_bytes: bytes, mode: str, timestamp: str) -> None:
-    """Inject a JS snippet that immediately downloads the report via a Blob URL."""
-    b64      = base64.b64encode(report_bytes).decode()
-    filename = f"va_report_{mode}_{timestamp}.xlsx"
-    mime     = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    components.html(
-        f"""
-        <script>
-        (function() {{
-            try {{
-                var b64 = '{b64}';
-                var binary = atob(b64);
-                var bytes = new Uint8Array(binary.length);
-                for (var i = 0; i < binary.length; i++) {{
-                    bytes[i] = binary.charCodeAt(i);
-                }}
-                var blob = new Blob([bytes], {{type: '{mime}'}});
-                var url  = URL.createObjectURL(blob);
-                var a    = document.createElement('a');
-                a.href     = url;
-                a.download = '{filename}';
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function() {{
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }}, 200);
-            }} catch(e) {{
-                console.error('Auto-download failed:', e);
-            }}
-        }})();
-        </script>
-        """,
-        height=1,
-    )
-
-
 # ─────────────────────────────────────────────
 # AUTH
 # ─────────────────────────────────────────────
@@ -82,7 +42,7 @@ def login_gate() -> bool:
         with st.form("login"):
             username = st.text_input("Username")
             password = st.text_input("Password", type="password")
-            if st.form_submit_button("Log in", use_container_width=True):
+            if st.form_submit_button("Log in", width="stretch"):
                 users = dict(st.secrets.get("users", {}))
                 if username in users and users[username] == password:
                     st.session_state.logged_in = True
@@ -150,7 +110,7 @@ def main():
 
     if uploaded:
         st.write(f"**{len(uploaded)} file(s) ready**")
-        if st.button("Run evaluation", type="primary", use_container_width=True):
+        if st.button("Run evaluation", type="primary", width="stretch"):
             _run(uploaded, mode, spot_n)
     elif "eval_results" not in st.session_state:
         st.info("Upload one or more .xlsx files to begin.")
@@ -158,9 +118,8 @@ def main():
     # ── Results — always render from session state ─────────────────────────
     if "eval_results" in st.session_state:
         r = st.session_state["eval_results"]
-        if r.get("fresh"):
-            r["fresh"] = False
-            _auto_download(r["report_bytes"], r["mode"], r["timestamp"])
+        if r.pop("fresh", False):
+            st.toast("Evaluation complete — download your report below before leaving the page.", icon="✅")
         n_errors = sum(1 for s in r["segments"] if s.get("error_category") == "api-error")
         if n_errors:
             st.warning(
@@ -177,7 +136,7 @@ def main():
             data=r["report_bytes"],
             file_name=f"va_report_{r['mode']}_{r['timestamp']}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
+            width="stretch",
             type="primary",
             key="dl_top",
         )
@@ -261,7 +220,7 @@ def _run(uploaded_files, mode: str, spot_n):
     summary      = aggregate_by_validator(segments)
     timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
     report_buf   = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
-    report_bytes = report_buf.read()   # BytesIO → bytes; required for base64 encoding
+    report_bytes = report_buf.read()   # BytesIO → bytes
 
     st.session_state["eval_results"] = {
         "segments":     segments,
@@ -305,7 +264,7 @@ def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes,
             rate_label:   f"{flagged / n * 100:.1f}%" if n else "—",
         })
 
-    st.dataframe(perf_rows, use_container_width=True, hide_index=True)
+    st.dataframe(perf_rows, width="stretch", hide_index=True)
 
     st.subheader("Segments")
 
@@ -338,7 +297,7 @@ def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes,
             "Reasoning": s.get("reasoning", ""),
         })
 
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.dataframe(rows, width="stretch", hide_index=True)
 
     st.divider()
     st.download_button(
@@ -346,7 +305,7 @@ def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes,
         data=report_bytes,
         file_name=f"va_report_{mode}_{timestamp}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        use_container_width=True,
+        width="stretch",
         key="dl_bottom",
     )
 
