@@ -153,6 +153,9 @@ def main():
 # ─────────────────────────────────────────────
 
 def _run(uploaded_files, mode: str, spot_n):
+    # Clear previous results immediately — if this run fails, stale data must not persist
+    st.session_state.pop("eval_results", None)
+
     segments = []
 
     with st.status("Reading files…") as status:
@@ -217,10 +220,14 @@ def _run(uploaded_files, mode: str, spot_n):
     progress_bar.progress(1.0, text="Done")
     status_text.empty()
 
-    summary      = aggregate_by_validator(segments)
-    timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_buf   = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
-    report_bytes = report_buf.read()   # BytesIO → bytes
+    try:
+        summary      = aggregate_by_validator(segments)
+        timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_buf   = write_report(segments, summary, output_path=None, mode=mode, return_bytes=True)
+        report_bytes = report_buf.read()
+    except Exception as exc:
+        st.error(f"Report generation failed: {exc}")
+        return
 
     st.session_state["eval_results"] = {
         "segments":     segments,
