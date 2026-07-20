@@ -303,7 +303,7 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
   watch cases — "deksel" is correct only for phone/device cases.
 - "mouse pad" → "musematte" preferred over "musepute".
 - "Dimensions" (spec label) → "Mål". "Dimensjoner" is a calque and incorrect in product spec context.
-- "tablecloth" → "duk". "Bordduk" is incorrect — it is a compound error.
+- "tablecloth" → both "duk" and "bordduk" are acceptable in NB-NO (LL-confirmed). Do not flag either form.
 - "heavy duty" → "kraftig". Do not translate literally.
 - "watch movement" / "clock movement" → "urverk" (e.g. "kvartsurverk"). The calque
   "bevegelse" / "kvartsbevegelse" is a confirmed error — flag it.
@@ -965,7 +965,21 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
     lock = threading.Lock()
     done = [0]
 
+    _DASH_ONLY = {"-", "–", "—"}
+
     def evaluate_one(seg: dict) -> None:
+        # Dash-only targets are intentional placeholders (non-English source workaround) — skip
+        if seg.get("mt_target", "").strip() in _DASH_ONLY:
+            seg["score"]          = 99
+            seg["severity"]       = "OK"
+            seg["error_category"] = "no-error"
+            seg["reasoning"]      = ""
+            with lock:
+                done[0] += 1
+                if progress_fn:
+                    progress_fn(done[0], total, "OK", 99, "no-error")
+            return
+
         try:
             if mode == "PE":
                 result = evaluate_segment_pe(client, seg["source"], seg["mt_target"], termbase)
