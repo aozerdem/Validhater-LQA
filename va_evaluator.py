@@ -737,7 +737,7 @@ def read_postedited_batch(filepaths: list[str]) -> list[dict]:
 # CHECKPOINT 2: SINGLE-SEGMENT EVALUATOR
 # ─────────────────────────────────────────────
 
-BEDROCK_MODEL_ID = "us.anthropic.claude-opus-4-7"
+BEDROCK_MODEL_ID = "us.anthropic.claude-sonnet-4-6"
 
 TERMBASE_PATH = (
     Path(__file__).parent / "SG and References" / "Glossary" / "TB_reference.md"
