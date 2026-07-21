@@ -290,7 +290,7 @@ TERM SUBSTITUTIONS (MT uses wrong word — correct term confirmed by LL):
   "Faktor" is rarely correct here. Judge by context — at most WARN, never FAIL on this alone.
 - "high quality material" → "materiale av høy kvalitet" is acceptable, but Norwegian
   often drops "høy/high"; "kvalitetsmateriale" is the more idiomatic rendering.
-- "neck gaiter" → "halsvarmer". "halsdammen" is a confirmed error.
+- "neck gaiter" → "hals" is the correct term (LL-confirmed). "halsvarmer" is also acceptable. "halsdammen" is a confirmed error — FAIL.
 - "non-ticking" (clock/watch context) → silent descriptors such as "lydløs" or
   "uten tikkelyd". "uten kryss" is a confirmed error.
 - "wallpaper" (art/product listing context, e.g. wall art prints) → "tapet".
