@@ -201,12 +201,13 @@ def _run(uploaded_files, mode: str, spot_n):
     status_text  = st.empty()
     ctx = get_script_run_ctx()
 
-    def progress_fn(done, total, severity, score, category):
+    def progress_fn(done, total, severity, score, category, cache_hits=0):
         add_script_run_ctx(threading.current_thread(), ctx)
         score_str = str(score) if score is not None else "---"
         sev_icon  = {"OK": "✅", "WARN": "⚠️", "FAIL": "❌"}.get(severity, "•")
         pct = done / total
-        progress_bar.progress(pct, text=f"{done}/{total} segments evaluated")
+        cache_str = f" | 💾 {cache_hits:,} cache hits" if cache_hits > 0 else ""
+        progress_bar.progress(pct, text=f"{done}/{total} segments evaluated{cache_str}")
         status_text.markdown(
             f"**Last:** {sev_icon} {severity} &nbsp;|&nbsp; score: `{score_str}` &nbsp;|&nbsp; {category}"
         )

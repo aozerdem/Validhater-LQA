@@ -799,7 +799,7 @@ def evaluate_segment(client, source: str, mt_target: str, termbase: list | None 
 
     response = client.converse(
         modelId=BEDROCK_MODEL_ID,
-        system=[{"text": SYSTEM_PROMPT}],
+        system=[{"text": SYSTEM_PROMPT}, {"cachePoint": {"type": "default"}}],
         messages=[{"role": "user", "content": [{"text": user_message}]}],
         inferenceConfig={"maxTokens": 1000},
     )
@@ -856,10 +856,12 @@ def evaluate_segment(client, source: str, mt_target: str, termbase: list | None 
     if result.get("error_category") == "no-error":
         result["reasoning"] = ""
 
-    result["input_tokens"]  = usage.get("inputTokens", 0)
-    result["output_tokens"] = usage.get("outputTokens", 0)
-    result["latency_ms"]    = metrics.get("latencyMs", 0)
-    result["tb_matches"]    = n_tb_matches
+    result["input_tokens"]       = usage.get("inputTokens", 0)
+    result["output_tokens"]      = usage.get("outputTokens", 0)
+    result["cache_read_tokens"]  = usage.get("cacheReadInputTokens", 0)
+    result["cache_write_tokens"] = usage.get("cacheWriteInputTokens", 0)
+    result["latency_ms"]         = metrics.get("latencyMs", 0)
+    result["tb_matches"]         = n_tb_matches
 
     return result
 
@@ -882,7 +884,7 @@ def evaluate_segment_pe(client, source: str, mt_target: str, termbase: list | No
 
     response = client.converse(
         modelId=BEDROCK_MODEL_ID,
-        system=[{"text": PE_SYSTEM_PROMPT}],
+        system=[{"text": PE_SYSTEM_PROMPT}, {"cachePoint": {"type": "default"}}],
         messages=[{"role": "user", "content": [{"text": user_message}]}],
         inferenceConfig={"maxTokens": 1000},
     )
@@ -922,10 +924,12 @@ def evaluate_segment_pe(client, source: str, mt_target: str, termbase: list | No
                                f"'{result.get('send_to_pe')}' | {result.get('reasoning', '')}")
         result["send_to_pe"] = "PARSE_ERROR"
 
-    result["input_tokens"]  = usage.get("inputTokens", 0)
-    result["output_tokens"] = usage.get("outputTokens", 0)
-    result["latency_ms"]    = metrics.get("latencyMs", 0)
-    result["tb_matches"]    = n_tb_matches
+    result["input_tokens"]       = usage.get("inputTokens", 0)
+    result["output_tokens"]      = usage.get("outputTokens", 0)
+    result["cache_read_tokens"]  = usage.get("cacheReadInputTokens", 0)
+    result["cache_write_tokens"] = usage.get("cacheWriteInputTokens", 0)
+    result["latency_ms"]         = metrics.get("latencyMs", 0)
+    result["tb_matches"]         = n_tb_matches
 
     return result
 
@@ -959,11 +963,12 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
               workers: int = 4, mode: str = "PU",
               progress_fn=None) -> list[dict]:
     """Evaluate all segments in parallel. Returns segments with results filled in.
-    progress_fn(done, total, severity, score, category) is called after each segment.
+    progress_fn(done, total, severity, score, category, cache_hits) is called after each segment.
     """
     total = len(segments)
     lock = threading.Lock()
     done = [0]
+    cache_hits = [0]
 
     _DASH_ONLY = {"-", "–", "—"}
 
@@ -977,9 +982,10 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
             with lock:
                 done[0] += 1
                 if progress_fn:
-                    progress_fn(done[0], total, "OK", 99, "no-error")
+                    progress_fn(done[0], total, "OK", 99, "no-error", cache_hits[0])
             return
 
+        _cache_read = 0
         try:
             if mode == "PE":
                 result = evaluate_segment_pe(client, seg["source"], seg["mt_target"], termbase)
@@ -987,12 +993,14 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
                 seg["severity"]       = "FAIL" if result.get("send_to_pe") == "Yes" else "OK"
                 seg["error_category"] = result.get("improvement_type", "")
                 seg["reasoning"]      = result.get("reasoning", "")
+                _cache_read = result.get("cache_read_tokens", 0)
             else:
                 result = _evaluate_with_retry(client, seg["source"], seg["mt_target"], termbase)
                 seg["score"]          = result["score"]
                 seg["severity"]       = result["severity"]
                 seg["error_category"] = result.get("error_category", "")
                 seg["reasoning"]      = result.get("reasoning", "")
+                _cache_read = result.get("cache_read_tokens", 0)
         except Exception as exc:
             seg["score"]          = -1
             seg["severity"]       = "FAIL"
@@ -1002,9 +1010,11 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
         score_str = str(seg["score"]) if seg["score"] is not None else "---"
         with lock:
             done[0] += 1
+            if _cache_read > 0:
+                cache_hits[0] += 1
             print(f"  [{done[0]:>3}/{total}] {seg['severity']:4} ({score_str:>3}) | {seg['error_category']}")
             if progress_fn:
-                progress_fn(done[0], total, seg["severity"], seg["score"], seg.get("error_category", ""))
+                progress_fn(done[0], total, seg["severity"], seg["score"], seg.get("error_category", ""), cache_hits[0])
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = [executor.submit(evaluate_one, seg) for seg in segments]

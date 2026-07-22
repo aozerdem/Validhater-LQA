@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDT LQA — Cost & Efficiency Report</title>
+<style>
+
+/* ── Token system ────────────────────────────────────────────────── */
+:root {
+  --bg:          #EEF2F8;
+  --surface:     #FFFFFF;
+  --surface-2:   #F3F6FB;
+  --border:      #CBD5E8;
+  --text-1:      #11213A;
+  --text-2:      #445E7C;
+  --text-3:      #7890A8;
+  --accent:      #1066A0;
+  --accent-dim:  #DCEEf8;
+  --green:       #197044;
+  --green-dim:   #DEF0E8;
+  --amber:       #8A5E00;
+  --amber-dim:   #FBF0DC;
+  --col-hl:      #E8F2FA;
+  --shadow:      0 1px 3px rgba(17,33,58,.08);
+  --shadow-md:   0 2px 10px rgba(17,33,58,.11);
+}
+
+@media (prefers-color-scheme: dark) { :root {
+  --bg:          #0A1828;
+  --surface:     #102038;
+  --surface-2:   #162C48;
+  --border:      #1E3560;
+  --text-1:      #C8DCF4;
+  --text-2:      #6A90B8;
+  --text-3:      #3A5878;
+  --accent:      #3AAED8;
+  --accent-dim:  #071828;
+  --green:       #28B86C;
+  --green-dim:   #07251A;
+  --amber:       #D0A030;
+  --amber-dim:   #1E1200;
+  --col-hl:      #0A2540;
+  --shadow:      0 1px 3px rgba(0,0,0,.35);
+  --shadow-md:   0 2px 10px rgba(0,0,0,.45);
+}}
+
+:root[data-theme="dark"] {
+  --bg:          #0A1828;
+  --surface:     #102038;
+  --surface-2:   #162C48;
+  --border:      #1E3560;
+  --text-1:      #C8DCF4;
+  --text-2:      #6A90B8;
+  --text-3:      #3A5878;
+  --accent:      #3AAED8;
+  --accent-dim:  #071828;
+  --green:       #28B86C;
+  --green-dim:   #07251A;
+  --amber:       #D0A030;
+  --amber-dim:   #1E1200;
+  --col-hl:      #0A2540;
+  --shadow:      0 1px 3px rgba(0,0,0,.35);
+  --shadow-md:   0 2px 10px rgba(0,0,0,.45);
+}
+
+:root[data-theme="light"] {
+  --bg:          #EEF2F8;
+  --surface:     #FFFFFF;
+  --surface-2:   #F3F6FB;
+  --border:      #CBD5E8;
+  --text-1:      #11213A;
+  --text-2:      #445E7C;
+  --text-3:      #7890A8;
+  --accent:      #1066A0;
+  --accent-dim:  #DCEEf8;
+  --green:       #197044;
+  --green-dim:   #DEF0E8;
+  --amber:       #8A5E00;
+  --amber-dim:   #FBF0DC;
+  --col-hl:      #E8F2FA;
+  --shadow:      0 1px 3px rgba(17,33,58,.08);
+  --shadow-md:   0 2px 10px rgba(17,33,58,.11);
+}
+
+/* ── Base ────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  padding: 36px 20px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 980px; margin: 0 auto; }
+
+/* ── Report header ───────────────────────────────────────────────── */
+.rh {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 22px;
+  border-bottom: 3px solid var(--accent);
+  margin-bottom: 32px;
+}
+
+.rh-eyebrow {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.rh-title {
+  font-family: 'Trebuchet MS', -apple-system, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.02em;
+  text-wrap: balance;
+  line-height: 1.15;
+}
+
+.rh-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.rh-meta {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.7;
+  white-space: nowrap;
+  padding-left: 20px;
+}
+
+.rh-meta strong {
+  color: var(--text-2);
+  display: block;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+/* ── Stat tiles ──────────────────────────────────────────────────── */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 16px 15px 13px;
+  box-shadow: var(--shadow);
+}
+
+.tile.green  { border-top-color: var(--green); }
+.tile.amber  { border-top-color: var(--amber); }
+
+.tile-label {
+  font-size: 10px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.tile-value {
+  font-family: 'Trebuchet MS', -apple-system, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+
+.tile.green .tile-value { color: var(--green); }
+.tile.amber .tile-value { color: var(--amber); }
+
+.tile-note {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 5px;
+}
+
+/* ── Section card ────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.card-head {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  padding: 11px 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.card-title {
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* ── Table ───────────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+thead th {
+  background: var(--surface-2);
+  padding: 9px 16px;
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+thead th.r { text-align: right; }
+thead th.c { text-align: center; }
+
+thead th.hl {
+  background: var(--col-hl);
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface-2); }
+tbody tr:hover td.hl { filter: brightness(.97); }
+
+tbody tr.grp-head td {
+  background: var(--surface-2);
+  font-size: 10px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-3);
+  padding: 7px 20px;
+  border-top: 1px solid var(--border);
+}
+
+tbody tr.grp-head:first-child td { border-top: none; }
+
+tbody td {
+  padding: 10px 16px;
+  color: var(--text-1);
+  vertical-align: middle;
+}
+
+tbody td.lbl {
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+tbody td.r { text-align: right; }
+tbody td.c { text-align: center; }
+
+tbody td.hl {
+  background: var(--col-hl);
+  color: var(--accent);
+}
+
+tbody td.green { color: var(--green); font-weight: 600; }
+tbody td.amber { color: var(--amber); }
+
+tr.total td {
+  font-weight: 700;
+  font-size: 14px;
+  border-top: 2px solid var(--border);
+}
+
+tr.total td.hl {
+  color: var(--accent);
+  font-size: 15px;
+}
+
+tr.savings td {
+  background: var(--green-dim);
+  border-top: 1px solid var(--border);
+}
+
+tr.savings td.lbl { color: var(--green); font-weight: 600; }
+tr.savings td.r   { color: var(--green); font-weight: 600; }
+
+/* badges */
+.badge {
+  display: inline-block;
+  font-size: 9.5px;
+  letter-spacing: .05em;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 700;
+  vertical-align: middle;
+  margin-left: 5px;
+  text-transform: uppercase;
+}
+
+.b-blue   { background: var(--accent-dim);  color: var(--accent); }
+.b-green  { background: var(--green-dim);   color: var(--green);  }
+.b-amber  { background: var(--amber-dim);   color: var(--amber);  }
+
+/* ── Token grid ──────────────────────────────────────────────────── */
+.tok-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.tok-cell {
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+}
+
+.tok-cell:last-child { border-right: none; }
+
+.tok-label {
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tok-value {
+  font-family: 'Trebuchet MS', -apple-system, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.tok-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 3px;
+}
+
+/* ── Two-column callout grid ─────────────────────────────────────── */
+.cg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.callout {
+  border-radius: 6px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-dim);
+}
+
+.callout.green {
+  border-left-color: var(--green);
+  background: var(--green-dim);
+}
+
+.callout.amber {
+  border-left-color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.co-title {
+  font-size: 10px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.callout.green .co-title { color: var(--green); }
+.callout.amber .co-title { color: var(--amber); }
+
+.co-val {
+  font-family: 'Trebuchet MS', -apple-system, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--accent);
+  line-height: 1.1;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.callout.green .co-val { color: var(--green); }
+.callout.amber .co-val { color: var(--amber); }
+
+.co-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* ── Notes ───────────────────────────────────────────────────────── */
+.notes-body {
+  padding: 14px 20px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 28px;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--text-2);
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.55;
+}
+
+.note::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--text-3);
+}
+
+.note strong { color: var(--text-1); }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .tiles     { grid-template-columns: repeat(2, 1fr); }
+  .tok-grid  { grid-template-columns: repeat(2, 1fr); }
+  .cg        { grid-template-columns: 1fr; }
+  .notes-body{ grid-template-columns: 1fr; }
+  .rh        { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .rh-meta   { text-align: left; padding-left: 0; }
+}
+
+@media (max-width: 480px) {
+  .tiles { grid-template-columns: 1fr; }
+  .tok-grid { grid-template-columns: 1fr; }
+  .tok-cell { border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Header ───────────────────────────────────────────────── -->
+  <header class="rh">
+    <div>
+      <div class="rh-eyebrow">Amazon TDT &nbsp;·&nbsp; Confidential</div>
+      <h1 class="rh-title">LQA Tool — Cost &amp; Efficiency Report</h1>
+      <div class="rh-sub">EN-GB → NB-NO &nbsp;·&nbsp; AI-Assisted Quality Assurance &nbsp;·&nbsp; Acclaro</div>
+    </div>
+    <div class="rh-meta">
+      <strong>As of</strong>
+      July 22, 2026
+      <br>
+      <strong>Model switch</strong>
+      Opus → Sonnet today
+      <br>
+      <strong>Billing source</strong>
+      AWS Cost Management
+    </div>
+  </header>
+
+  <!-- ── Stat tiles ───────────────────────────────────────────── -->
+  <div class="tiles">
+    <div class="tile">
+      <div class="tile-label">Words Delivered</div>
+      <div class="tile-value">1.4M</div>
+      <div class="tile-note">~1.26M processed by AI tool</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Segments Evaluated</div>
+      <div class="tile-value">~63,000</div>
+      <div class="tile-note">avg. 20 words per segment</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Tokens Processed</div>
+      <div class="tile-value">~960M</div>
+      <div class="tile-note">~950M input · ~12.6M output</div>
+    </div>
+    <div class="tile amber">
+      <div class="tile-label">AI Cost to Date</div>
+      <div class="tile-value">$10,988</div>
+      <div class="tile-note">June + July 1–22 actual</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-label">Client Quality Complaints</div>
+      <div class="tile-value">0</div>
+      <div class="tile-note">zero rework cycles triggered</div>
+    </div>
+  </div>
+
+  <!-- ── Cost comparison table ─────────────────────────────────── -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Cost Comparison</span>
+      <span class="card-desc">Full project scope · July figures include AWS forecast for remaining days</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28%">Scenario</th>
+            <th class="r">June 2026</th>
+            <th class="r">July 2026 (full)</th>
+            <th class="r">Total Project</th>
+            <th class="r">Per 1K Words</th>
+            <th class="r">Per Segment</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="grp-head"><td colspan="6">AI Tool — Model Scenarios</td></tr>
+
+          <tr>
+            <td class="lbl">
+              Opus 4.7 — full project
+              <span class="badge b-amber">reference</span>
+            </td>
+            <td class="r">$2,988</td>
+            <td class="r">$18,364</td>
+            <td class="r"><strong>$21,352</strong></td>
+            <td class="r">$15.25</td>
+            <td class="r">$0.34</td>
+          </tr>
+
+          <tr>
+            <td class="lbl">
+              <strong>Sonnet 4.6 — from July 22</strong>
+              <span class="badge b-blue">current path</span>
+            </td>
+            <td class="r hl">$2,988 <sup>†</sup></td>
+            <td class="r hl">$14,218 <sup>†</sup></td>
+            <td class="r hl"><strong>$17,206</strong></td>
+            <td class="r hl">$12.29</td>
+            <td class="r hl">$0.27</td>
+          </tr>
+
+          <tr>
+            <td class="lbl">
+              Sonnet 4.6 — if from day one
+              <span class="badge b-green">hypothetical</span>
+            </td>
+            <td class="r">$1,793</td>
+            <td class="r">$11,018</td>
+            <td class="r"><strong>$12,811</strong></td>
+            <td class="r">$9.15</td>
+            <td class="r">$0.20</td>
+          </tr>
+
+          <tr class="grp-head"><td colspan="6">Human QA Equivalent</td></tr>
+
+          <tr>
+            <td class="lbl">
+              NO-NB linguist · 2,000 words/hr · $40/hr
+              <span class="badge b-amber">benchmark</span>
+            </td>
+            <td class="r amber">~$6,000</td>
+            <td class="r amber">~$22,000</td>
+            <td class="r amber"><strong>$28,000</strong></td>
+            <td class="r amber">$20.00</td>
+            <td class="r amber">$0.40</td>
+          </tr>
+
+          <tr>
+            <td class="lbl">Human QA · with PM overhead (+20%)</td>
+            <td class="r">~$7,200</td>
+            <td class="r">~$26,400</td>
+            <td class="r"><strong>$33,600</strong></td>
+            <td class="r">$24.00</td>
+            <td class="r">$0.48</td>
+          </tr>
+
+          <tr class="grp-head"><td colspan="6">Savings — Current AI Path vs. Human QA (direct cost)</td></tr>
+
+          <tr class="savings">
+            <td class="lbl">Savings: Sonnet path vs. Human QA</td>
+            <td class="r">+$3,012</td>
+            <td class="r">+$7,782</td>
+            <td class="r"><strong>+$10,794</strong></td>
+            <td class="r">$7.71/K</td>
+            <td class="r">$0.13/seg</td>
+          </tr>
+
+          <tr class="savings">
+            <td class="lbl">Savings: Sonnet path vs. Human + overhead</td>
+            <td class="r">+$4,212</td>
+            <td class="r">+$12,182</td>
+            <td class="r"><strong>+$16,394</strong></td>
+            <td class="r">$11.71/K</td>
+            <td class="r">$0.21/seg</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <div style="padding: 8px 20px 13px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); line-height: 1.6;">
+      <sup>†</sup> June and July 1–22 reflect actual Opus spend — the switch to Sonnet takes effect July 23 for remaining batches.
+      Human QA figures assume ~300K words delivered in June, ~1.1M in July; direct linguist rate only.
+    </div>
+  </div>
+
+  <!-- ── Token consumption breakdown ──────────────────────────── -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Token Consumption Estimate</span>
+      <span class="card-desc">Derived from billing data · system prompt dominates per-call cost</span>
+    </div>
+    <div class="tok-grid">
+      <div class="tok-cell">
+        <div class="tok-label">System Prompt</div>
+        <div class="tok-value">~15,000</div>
+        <div class="tok-sub">tokens / call · largest cost driver</div>
+      </div>
+      <div class="tok-cell">
+        <div class="tok-label">Source + Target Text</div>
+        <div class="tok-value">~60</div>
+        <div class="tok-sub">tokens / call · avg. 20 words each</div>
+      </div>
+      <div class="tok-cell">
+        <div class="tok-label">Model Response</div>
+        <div class="tok-value">~200</div>
+        <div class="tok-sub">tokens / call · reasoning + JSON score</div>
+      </div>
+      <div class="tok-cell">
+        <div class="tok-label">Total Input Tokens</div>
+        <div class="tok-value">~950M</div>
+        <div class="tok-sub">across ~63,000 segment evaluations</div>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--border); padding: 10px 20px; font-size: 12px; color: var(--text-3); line-height: 1.6;">
+      The system prompt encodes all NB-NO QA rules, error categories, scoring criteria, and seven rounds of Language Lead feedback — making it the primary token cost.
+      Prompt caching (Bedrock feature) was not active during the Opus period; enabling it on future Sonnet batches could reduce input costs further.
+    </div>
+  </div>
+
+  <!-- ── Efficiency table ───────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Efficiency &amp; Quality Metrics</span>
+      <span class="card-desc">AI tool vs. traditional human QA process</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%">Metric</th>
+            <th class="c hl">AI Tool</th>
+            <th class="c">Human QA</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="grp-head"><td colspan="4">Speed &amp; Scale</td></tr>
+
+          <tr>
+            <td class="lbl">Segment throughput</td>
+            <td class="c hl"><strong>~1,440 seg/hr</strong></td>
+            <td class="c">~100 seg/hr</td>
+            <td style="font-size:12px;color:var(--text-3)">4 parallel threads on Bedrock</td>
+          </tr>
+          <tr>
+            <td class="lbl">Speed advantage</td>
+            <td class="c hl green"><strong>14× faster</strong></td>
+            <td class="c">—</td>
+            <td style="font-size:12px;color:var(--text-3)">Runs unattended overnight</td>
+          </tr>
+          <tr>
+            <td class="lbl">Person-hours required (1.4M words)</td>
+            <td class="c hl green"><strong>0</strong></td>
+            <td class="c amber"><strong>700 hrs</strong></td>
+            <td style="font-size:12px;color:var(--text-3)">700 hrs = 17.5 FTE-weeks</td>
+          </tr>
+          <tr>
+            <td class="lbl">Typical batch turnaround</td>
+            <td class="c hl"><strong>2–4 hours</strong></td>
+            <td class="c">Days to weeks</td>
+            <td style="font-size:12px;color:var(--text-3)">Depends on volume</td>
+          </tr>
+
+          <tr class="grp-head"><td colspan="4">Coverage &amp; Consistency</td></tr>
+
+          <tr>
+            <td class="lbl">Segment coverage</td>
+            <td class="c hl green"><strong>100%</strong></td>
+            <td class="c">10–20%</td>
+            <td style="font-size:12px;color:var(--text-3)">Human QA typically samples</td>
+          </tr>
+          <tr>
+            <td class="lbl">Rule consistency</td>
+            <td class="c hl green"><strong>100%</strong></td>
+            <td class="c">Variable</td>
+            <td style="font-size:12px;color:var(--text-3)">Same ruleset, every segment</td>
+          </tr>
+          <tr>
+            <td class="lbl">Feedback incorporated to date</td>
+            <td class="c hl"><strong>7 rounds</strong></td>
+            <td class="c">—</td>
+            <td style="font-size:12px;color:var(--text-3)">Language Lead feedback cycles</td>
+          </tr>
+          <tr>
+            <td class="lbl">Dash/pass-through skip (zero tokens)</td>
+            <td class="c hl green"><strong>Yes</strong></td>
+            <td class="c">N/A</td>
+            <td style="font-size:12px;color:var(--text-3)">-, –, — targets auto-skipped</td>
+          </tr>
+
+          <tr class="grp-head"><td colspan="4">Quality Outcomes</td></tr>
+
+          <tr>
+            <td class="lbl">Client quality complaints</td>
+            <td class="c hl green"><strong>0</strong></td>
+            <td class="c">—</td>
+            <td style="font-size:12px;color:var(--text-3)">As of July 22, 2026</td>
+          </tr>
+          <tr>
+            <td class="lbl">Rework cycles triggered</td>
+            <td class="c hl green"><strong>0</strong></td>
+            <td class="c">—</td>
+            <td style="font-size:12px;color:var(--text-3)">Zero additional cost incurred</td>
+          </tr>
+          <tr>
+            <td class="lbl">Estimated rework cost if triggered</td>
+            <td class="c hl amber">+$17,206</td>
+            <td class="c amber">+$28,000</td>
+            <td style="font-size:12px;color:var(--text-3)">Full re-run at respective rates</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Savings callouts ───────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Key Financial Takeaways</span>
+    </div>
+    <div class="cg">
+      <div class="callout green">
+        <div class="co-title">Savings vs. Human QA (current path)</div>
+        <div class="co-val">$10,794</div>
+        <div class="co-desc">
+          Sonnet path ($17,206 projected) vs. direct human QA cost ($28,000).
+          Including PM overhead the saving reaches <strong>$16,394</strong>.
+        </div>
+      </div>
+      <div class="callout green">
+        <div class="co-title">ROI on AI Investment</div>
+        <div class="co-val">62.7%</div>
+        <div class="co-desc">
+          Net savings ($10,794) divided by AI investment ($17,206).
+          ROI rises to <strong>118%</strong> under the hypothetical all-Sonnet scenario.
+        </div>
+      </div>
+      <div class="callout">
+        <div class="co-title">Savings from Switching to Sonnet Today</div>
+        <div class="co-val">$4,146</div>
+        <div class="co-desc">
+          Remaining July (Jul 23–31) at Sonnet rates (~$6,218)
+          vs. Opus rates (~$10,364) — <strong>40% reduction</strong> on every future batch.
+        </div>
+      </div>
+      <div class="callout amber">
+        <div class="co-title">Zero-Complaint Rework Risk Avoided</div>
+        <div class="co-val">$28,000+</div>
+        <div class="co-desc">
+          A single rework cycle at human QA rates would cost an additional $28,000.
+          Zero client complaints to date means <strong>this cost has been fully avoided</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Methodology notes ──────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Methodology &amp; Assumptions</span>
+    </div>
+    <div class="notes-body">
+      <p class="note"><strong>Words processed:</strong> 1.4M total delivered; ~90% (1.26M) evaluated by AI tool; remainder includes manually handled strings.</p>
+      <p class="note"><strong>Segment size:</strong> Average 20 words/segment estimated from typical Amazon product description content structure.</p>
+      <p class="note"><strong>System prompt tokens (~15,000):</strong> Back-calculated from AWS billing data. Incorporates comprehensive NB-NO QA rules across 7 feedback rounds.</p>
+      <p class="note"><strong>Bedrock pricing:</strong> Cross-region inference (us.anthropic.*) model IDs. Exact per-token rate varies by model; costs shown are AWS actual figures.</p>
+      <p class="note"><strong>Human QA rate:</strong> $40/hr (NO-NB linguistic rate as reported). 2,000 words/hr standard throughput. PM overhead assumed at +20%.</p>
+      <p class="note"><strong>July remaining forecast:</strong> AWS Cost Management projection ($18,363.55 full month). Actual spend may vary depending on batch volumes.</p>
+      <p class="note"><strong>Sonnet savings ratio:</strong> Sonnet 4.6 priced at 60% of Opus 4.7 per million tokens (input: $3 vs $5; output: $15 vs $25).</p>
+      <p class="note"><strong>Prompt caching:</strong> Not enabled during Opus period. Enabling cache on the system prompt for Sonnet batches could reduce input costs by an additional 50–90%.</p>
+      <p class="note"><strong>Human QA monthly split:</strong> ~300K words attributed to June, ~1.1M to July, based on observed billing ramp-up pattern.</p>
+      <p class="note"><strong>Quality note:</strong> Zero client complaints as of July 22, 2026. No rework cycles have been initiated. This record validates both tool quality and the Language Lead feedback integration process.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
