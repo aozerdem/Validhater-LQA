@@ -975,17 +975,20 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
     def evaluate_one(seg: dict) -> None:
         # Dash-only targets are intentional placeholders (non-English source workaround) — skip
         if seg.get("mt_target", "").strip() in _DASH_ONLY:
-            seg["score"]          = 99
-            seg["severity"]       = "OK"
-            seg["error_category"] = "no-error"
-            seg["reasoning"]      = ""
+            seg["score"]             = 99
+            seg["severity"]          = "OK"
+            seg["error_category"]    = "no-error"
+            seg["reasoning"]         = ""
+            seg["input_tokens"]      = 0
+            seg["output_tokens"]     = 0
+            seg["cache_read_tokens"] = 0
+            seg["cache_write_tokens"]= 0
             with lock:
                 done[0] += 1
                 if progress_fn:
                     progress_fn(done[0], total, "OK", 99, "no-error", cache_hits[0])
             return
 
-        _cache_read = 0
         try:
             if mode == "PE":
                 result = evaluate_segment_pe(client, seg["source"], seg["mt_target"], termbase)
@@ -993,24 +996,30 @@ def run_batch(segments: list[dict], client, termbase: list | None = None,
                 seg["severity"]       = "FAIL" if result.get("send_to_pe") == "Yes" else "OK"
                 seg["error_category"] = result.get("improvement_type", "")
                 seg["reasoning"]      = result.get("reasoning", "")
-                _cache_read = result.get("cache_read_tokens", 0)
             else:
                 result = _evaluate_with_retry(client, seg["source"], seg["mt_target"], termbase)
                 seg["score"]          = result["score"]
                 seg["severity"]       = result["severity"]
                 seg["error_category"] = result.get("error_category", "")
                 seg["reasoning"]      = result.get("reasoning", "")
-                _cache_read = result.get("cache_read_tokens", 0)
+            seg["input_tokens"]       = result.get("input_tokens", 0)
+            seg["output_tokens"]      = result.get("output_tokens", 0)
+            seg["cache_read_tokens"]  = result.get("cache_read_tokens", 0)
+            seg["cache_write_tokens"] = result.get("cache_write_tokens", 0)
         except Exception as exc:
-            seg["score"]          = -1
-            seg["severity"]       = "FAIL"
-            seg["error_category"] = "api-error"
-            seg["reasoning"]      = f"Segment skipped after retries: {exc}"
+            seg["score"]             = -1
+            seg["severity"]          = "FAIL"
+            seg["error_category"]    = "api-error"
+            seg["reasoning"]         = f"Segment skipped after retries: {exc}"
+            seg["input_tokens"]      = 0
+            seg["output_tokens"]     = 0
+            seg["cache_read_tokens"] = 0
+            seg["cache_write_tokens"]= 0
 
         score_str = str(seg["score"]) if seg["score"] is not None else "---"
         with lock:
             done[0] += 1
-            if _cache_read > 0:
+            if seg.get("cache_read_tokens", 0) > 0:
                 cache_hits[0] += 1
             print(f"  [{done[0]:>3}/{total}] {seg['severity']:4} ({score_str:>3}) | {seg['error_category']}")
             if progress_fn:
@@ -1300,6 +1309,49 @@ def write_report(segments: list[dict], summary: dict, output_path: str | None,
         ws_sum.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
     ws_sum.row_dimensions[1].height = 42
     ws_sum.row_dimensions[3].height = 28
+
+    # ── Sheet 3: AI Usage / Token Stats ──
+    ws_stats = wb.create_sheet("AI_Usage")
+
+    api_calls_n     = sum(1 for s in segments if s.get("input_tokens", 0) > 0
+                                              or s.get("cache_read_tokens", 0) > 0
+                                              or s.get("cache_write_tokens", 0) > 0)
+    cache_hit_n     = sum(1 for s in segments if s.get("cache_read_tokens", 0) > 0)
+    total_input     = sum(s.get("input_tokens", 0) for s in segments)
+    total_output    = sum(s.get("output_tokens", 0) for s in segments)
+    cache_read_tok  = sum(s.get("cache_read_tokens", 0) for s in segments)
+    cache_write_tok = sum(s.get("cache_write_tokens", 0) for s in segments)
+    hit_rate_str    = f"{cache_hit_n / api_calls_n * 100:.1f}%" if api_calls_n else "—"
+
+    ws_stats.merge_cells("A1:B1")
+    ws_stats["A1"] = "AI Evaluation — Token Usage & Cache Stats"
+    ws_stats["A1"].font = Font(bold=True, size=12, color="FFFFFF")
+    ws_stats["A1"].fill = PatternFill("solid", fgColor="2E4057")
+    ws_stats["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    ws_stats.row_dimensions[1].height = 24
+
+    stats_rows = [
+        ("Model",                            BEDROCK_MODEL_ID),
+        ("Segments evaluated",               len(segments)),
+        ("API calls made",                   api_calls_n),
+        ("Cache hits",                       cache_hit_n),
+        ("Cache hit rate",                   hit_rate_str),
+        ("Full-rate input tokens",           total_input),
+        ("Cache read tokens (×0.1 rate)",   cache_read_tok),
+        ("Cache write tokens (×1.25 rate)",  cache_write_tok),
+        ("Output tokens",                    total_output),
+    ]
+    for label, value in stats_rows:
+        ws_stats.append([label, value])
+
+    bold_font = Font(bold=True)
+    for row in ws_stats.iter_rows(min_row=2):
+        row[0].font = bold_font
+        if isinstance(row[1].value, int):
+            row[1].number_format = "#,##0"
+
+    ws_stats.column_dimensions["A"].width = 36
+    ws_stats.column_dimensions["B"].width = 24
 
     if return_bytes:
         import io as _io

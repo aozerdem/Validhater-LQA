@@ -274,6 +274,21 @@ def _show_results(segments: list, summary: dict, mode: str, report_bytes: bytes,
 
     st.dataframe(perf_rows, width="stretch", hide_index=True)
 
+    api_calls_n  = sum(1 for s in segments if s.get("input_tokens", 0) > 0
+                                          or s.get("cache_read_tokens", 0) > 0
+                                          or s.get("cache_write_tokens", 0) > 0)
+    cache_hit_n  = sum(1 for s in segments if s.get("cache_read_tokens", 0) > 0)
+    cache_read   = sum(s.get("cache_read_tokens", 0) for s in segments)
+    input_tok    = sum(s.get("input_tokens", 0) for s in segments)
+    output_tok   = sum(s.get("output_tokens", 0) for s in segments)
+
+    st.subheader("Token Usage")
+    uc1, uc2, uc3, uc4 = st.columns(4)
+    uc1.metric("Cache hits", f"{cache_hit_n} / {api_calls_n}")
+    uc2.metric("Cache read tokens", f"{cache_read:,}")
+    uc3.metric("Full-rate input tokens", f"{input_tok:,}")
+    uc4.metric("Output tokens", f"{output_tok:,}")
+
     st.subheader("Segments")
 
     fc1, fc2 = st.columns(2)
