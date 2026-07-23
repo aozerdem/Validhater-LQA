@@ -70,6 +70,7 @@ analyze_results.py
 make_arbitration.py
 _build_pe_goldset.py
 junk/
+cost optimization/
 
 # Internal cost reporting (not for source control)
 lqa-cost-report.html
